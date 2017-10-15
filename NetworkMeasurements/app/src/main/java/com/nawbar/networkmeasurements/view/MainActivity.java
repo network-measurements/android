@@ -1,6 +1,7 @@
 package com.nawbar.networkmeasurements.view;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,13 +19,12 @@ import android.widget.ListView;
 import com.nawbar.networkmeasurements.R;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
+import com.nawbar.networkmeasurements.service.MeasurementsService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nawbar.networkmeasurements.R.id.fab;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ConsoleInput {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter consoleAdapter;
 
     private Connection connection;
-
     private MeasurementsCoordinator coordinator;
 
     @Override
@@ -44,21 +43,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ConsoleInput consoleInput = new ConsoleInput() {
-            @Override
-            public void putMessage(String message) {
-                putConsoleMessage(message);
-            }
-        };
-
         console = (ListView) findViewById(R.id.console);
         List<String> consoleList = new ArrayList<>();
         consoleAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, consoleList);
         console.setAdapter(consoleAdapter);
 
-        connection = new Connection(this, consoleInput);
-        coordinator = new MeasurementsCoordinator(this, consoleInput, connection);
+        connection = new Connection(this, this);
+        coordinator = new MeasurementsCoordinator(this, this, connection);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_dialog_map);
@@ -66,25 +58,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (coordinator.isStarted()) {
-                    startMeasurements(fab);
-                } else {
                     endMeasurements(fab);
+                } else {
+                    startMeasurements(fab);
                 }
             }
         });
+
+        //startMeasurementService();
 
         checkPermissions();
 
         Log.e(TAG, "onCreate done");
     }
 
-    private void startMeasurements(final FloatingActionButton fab) {
-        Log.e(TAG, "Shouting down measurements session");
-        coordinator.shutdown();
-        fab.setImageResource(android.R.drawable.ic_dialog_map);
+    private void startMeasurementService() {
+        startService(new Intent(this, MeasurementsService.class));
     }
 
-    private void endMeasurements(final FloatingActionButton fab) {
+    private void startMeasurements(final FloatingActionButton fab) {
         Log.e(TAG, "Starting measurements session");
         fab.setImageResource(android.R.drawable.ic_dialog_info);
         connection.startSession(new Connection.Listener() {
@@ -101,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void endMeasurements(final FloatingActionButton fab) {
+        Log.e(TAG, "Shouting down measurements session");
+        coordinator.shutdown();
+        fab.setImageResource(android.R.drawable.ic_dialog_map);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -115,6 +113,11 @@ public class MainActivity extends AppCompatActivity {
                 console.setSelection(consoleAdapter.getCount() - 1);
             }
         });
+    }
+
+    @Override
+    public void putMessage(String message) {
+        putConsoleMessage(message);
     }
 
     public void checkPermissions() {

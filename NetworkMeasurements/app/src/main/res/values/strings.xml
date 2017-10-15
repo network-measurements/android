@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">NetworkMeasurements</string>
+    <string name="service_name">NetworkMeasurements</string>
     <string name="action_clean_console">Clean console</string>
 </resources>

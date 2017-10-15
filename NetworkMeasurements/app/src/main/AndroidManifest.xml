@@ -22,6 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.MeasurementsService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/service_name">
+        </service>
+
     </application>
 
 </manifest>

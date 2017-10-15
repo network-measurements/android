@@ -117,7 +117,7 @@ public class Connection {
 //            JSONObject args = radio.toJson();
 //            args.put("time", System.currentTimeMillis() - startTime);
 //            JsonObjectRequest request = new JsonObjectRequest
-//                    (Request.Method.GET, radioUrl, args, new Response.Listener<JSONObject>() {
+//                    (Request.Method.POST, radioUrl, args, new Response.Listener<JSONObject>() {
 //                        @Override
 //                        public void onResponse(JSONObject response) {
 //                            Log.e(TAG, "onResponse radio: " + response.toString());
@@ -142,7 +142,7 @@ public class Connection {
 //            JSONObject args = link.toJson();
 //            args.put("time", System.currentTimeMillis() - startTime);
 //            JsonObjectRequest request = new JsonObjectRequest
-//                    (Request.Method.GET, linkUrl, args, new Response.Listener<JSONObject>() {
+//                    (Request.Method.POST, linkUrl, args, new Response.Listener<JSONObject>() {
 //                        @Override
 //                        public void onResponse(JSONObject response) {
 //                            Log.e(TAG, "onResponse link: " + response.toString());
