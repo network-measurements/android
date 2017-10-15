@@ -2,6 +2,7 @@ package com.nawbar.networkmeasurements.measurements;
 
 import android.content.Context;
 
+import com.nawbar.networkmeasurements.server_data.Link;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
 /**
@@ -15,8 +16,15 @@ public class LinkSource {
     private Context context;
     private ConsoleInput consoleInput;
 
+    private Link actualLink;
+
     public LinkSource(Context context, ConsoleInput console) {
         this.context = context;
         this.consoleInput = console;
+        this.actualLink = new Link();
+    }
+
+    public Link getActualLink() {
+        return actualLink;
     }
 }

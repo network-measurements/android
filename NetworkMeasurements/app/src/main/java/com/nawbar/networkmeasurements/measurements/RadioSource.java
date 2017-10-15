@@ -35,8 +35,8 @@ public class RadioSource {
         Radio measurement = new Radio();
         List<CellInfo> cells = telephonyManager.getAllCellInfo();
         if (cells != null) {
+            Log.e(TAG, "Found cells: " + cells.size());
             for (CellInfo info : cells) {
-                Log.e(TAG, "Cell: " + info);
                 if (info instanceof CellInfoGsm) {
                     if (isValidGsmCell((CellInfoGsm) info)) {
                         measurement.addCell(new CellData((CellInfoGsm) info), info.isRegistered());

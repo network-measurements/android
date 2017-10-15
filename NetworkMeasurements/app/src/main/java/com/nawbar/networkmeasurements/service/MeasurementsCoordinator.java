@@ -10,6 +10,9 @@ import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.server_data.Location;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by nawba on 15.10.2017.
  */
@@ -33,6 +36,9 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     private LocationSource locationSource;
     private LinkSource linkSource;
 
+    private Timer radioTimer;
+    private Timer linkTimer;
+
     public MeasurementsCoordinator(Context context, ConsoleInput console, Connection connection) {
         this.connection = connection;
         this.consoleInput = console;
@@ -43,12 +49,50 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     }
 
     public void start() {
-
+        locationSource.startLocalization();
+        radioTimer = new Timer();
+        radioTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                //consoleInput.putMessage("NET: measuring eNBs");
+                connection.sendRadio(measurementsSource.measure(), new Connection.Listener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e(TAG, "Radio sent");
+                    }
+                    @Override
+                    public void onError(String message) {
+                        consoleInput.putMessage("ERR: While sending radio: " + message);
+                    }
+                });
+            }
+        }, 500, RADIO_MEAS_INTERVAL);
+        linkTimer = new Timer();
+        linkTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                //consoleInput.putMessage("LNK: capturing link state");
+                connection.sendLink(linkSource.getActualLink(), new Connection.Listener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e(TAG, "Link sent");
+                    }
+                    @Override
+                    public void onError(String message) {
+                        consoleInput.putMessage("ERR: While sending link: " + message);
+                    }
+                });
+            }
+        }, LINK_UPDATE_INTERVAL, LINK_UPDATE_INTERVAL);
         consoleInput.putMessage("SYS: measurements started");
     }
 
     public void shutdown() {
-
+        locationSource.endLocalization();
+        radioTimer.cancel();
+        radioTimer = null;
+        linkTimer.cancel();
+        linkTimer = null;
         consoleInput.putMessage("SYS: measurements ended");
     }
 
