@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         console.setAdapter(consoleAdapter);
 
         connection = new Connection(this, consoleInput);
-
         coordinator = new MeasurementsCoordinator(this, consoleInput, connection);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

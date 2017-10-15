@@ -7,7 +7,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.nawbar.networkmeasurements.server_data.Link;
@@ -15,7 +14,6 @@ import com.nawbar.networkmeasurements.server_data.Location;
 import com.nawbar.networkmeasurements.server_data.Radio;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
