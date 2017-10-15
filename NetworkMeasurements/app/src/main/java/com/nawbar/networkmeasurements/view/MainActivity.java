@@ -22,6 +22,8 @@ import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nawbar.networkmeasurements.R.id.fab;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -59,27 +61,45 @@ public class MainActivity extends AppCompatActivity {
 
         coordinator = new MeasurementsCoordinator(this, consoleInput, connection);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(android.R.drawable.ic_dialog_map);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(TAG, "Starting measurements session");
-                connection.startSession(new Connection.Listener() {
-                    @Override
-                    public void onSuccess() {
-                        coordinator.start();
-                    }
-                    @Override
-                    public void onError(String message) {
-                        consoleInput.putMessage("ERR: while starting session: " + message);
-                    }
-                });
+                if (coordinator.isStarted()) {
+                    startMeasurements(fab);
+                } else {
+                    endMeasurements(fab);
+                }
             }
         });
 
         checkPermissions();
 
         Log.e(TAG, "onCreate done");
+    }
+
+    private void startMeasurements(final FloatingActionButton fab) {
+        Log.e(TAG, "Shouting down measurements session");
+        coordinator.shutdown();
+        fab.setImageResource(android.R.drawable.ic_dialog_map);
+    }
+
+    private void endMeasurements(final FloatingActionButton fab) {
+        Log.e(TAG, "Starting measurements session");
+        fab.setImageResource(android.R.drawable.ic_dialog_info);
+        connection.startSession(new Connection.Listener() {
+            @Override
+            public void onSuccess() {
+                coordinator.start();
+                fab.setImageResource(android.R.drawable.ic_dialog_alert);
+            }
+            @Override
+            public void onError(String message) {
+                fab.setImageResource(android.R.drawable.ic_dialog_map);
+                putConsoleMessage("ERR: while starting session: " + message);
+            }
+        });
     }
 
     @Override

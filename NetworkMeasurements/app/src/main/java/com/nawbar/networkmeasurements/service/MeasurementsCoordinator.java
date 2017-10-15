@@ -32,6 +32,8 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
 
     private ConsoleInput consoleInput;
 
+    private boolean started;
+
     private RadioSource measurementsSource;
     private LocationSource locationSource;
     private LinkSource linkSource;
@@ -42,6 +44,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     public MeasurementsCoordinator(Context context, ConsoleInput console, Connection connection) {
         this.connection = connection;
         this.consoleInput = console;
+        this.started = false;
         this.measurementsSource = new RadioSource(context, console);
         this.locationSource = new LocationSource(context, console, this,
                 MIN_LOCATION_INTERVAL, MAX_LOCATION_CHANGE);
@@ -84,6 +87,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
                 });
             }
         }, LINK_UPDATE_INTERVAL, LINK_UPDATE_INTERVAL);
+        started = true;
         consoleInput.putMessage("SYS: measurements started");
     }
 
@@ -93,6 +97,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
         radioTimer = null;
         linkTimer.cancel();
         linkTimer = null;
+        started = false;
         consoleInput.putMessage("SYS: measurements ended");
     }
 
@@ -119,5 +124,9 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
                 consoleInput.putMessage("ERR: While sending location: " + message);
             }
         });
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 }

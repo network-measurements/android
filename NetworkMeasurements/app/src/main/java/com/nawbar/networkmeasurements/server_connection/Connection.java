@@ -35,6 +35,8 @@ public class Connection {
     private static final String SESSIONS = URL + "sessions" + URL_PARAM;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
+    private RequestQueue queue;
+
     private ConsoleInput console;
 
     private String session;
@@ -43,8 +45,6 @@ public class Connection {
     private String locationUrl;
     private String radioUrl;
     private String linkUrl;
-
-    private RequestQueue queue;
 
     public Connection(Context context, ConsoleInput consoleInput) {
         this.queue = Volley.newRequestQueue(context);
@@ -94,10 +94,10 @@ public class Connection {
             args.put("time", System.currentTimeMillis() - startTime);
             Log.e(TAG, args.toString());
             JsonObjectRequest request = new JsonObjectRequest
-                    (Request.Method.GET, locationUrl, args, new Response.Listener<JSONObject>() {
+                    (Request.Method.POST, locationUrl, args, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.e(TAG, "onResponse location: " + response.toString());
+                            //Log.e(TAG, "onResponse location: " + response.toString());
                             listener.onSuccess();
                         }
                     }, new Response.ErrorListener() {

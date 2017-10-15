@@ -47,7 +47,7 @@ public class LocationSource implements LocationListener {
             Log.e(TAG, "Error, no permissions for localization");
             consoleInput.putMessage("ERR: No permissions for localization");
         } else {
-            Log.e(TAG, "Starting localization, interval: " + minInterval + " ms, distance: " + maxDistance + " m");
+            Log.e(TAG, "Starting localization, interval: " + minInterval + "ms, distance: " + maxDistance + "m");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minInterval, maxDistance, this);
         }
     }
