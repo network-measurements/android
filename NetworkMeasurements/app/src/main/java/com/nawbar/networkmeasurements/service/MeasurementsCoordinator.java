@@ -1,0 +1,79 @@
+package com.nawbar.networkmeasurements.service;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.nawbar.networkmeasurements.measurements.LinkSource;
+import com.nawbar.networkmeasurements.measurements.LocationSource;
+import com.nawbar.networkmeasurements.measurements.RadioSource;
+import com.nawbar.networkmeasurements.server_connection.Connection;
+import com.nawbar.networkmeasurements.server_data.Location;
+import com.nawbar.networkmeasurements.view.ConsoleInput;
+
+/**
+ * Created by nawba on 15.10.2017.
+ */
+
+public class MeasurementsCoordinator implements LocationSource.Listener {
+
+    private static final String TAG = MeasurementsCoordinator.class.getSimpleName();
+
+    private static final int RADIO_MEAS_INTERVAL = 5000; // [ms]
+
+    private static final int MIN_LOCATION_INTERVAL = 3000; // [ms]
+    private static final int MAX_LOCATION_CHANGE = 5; // [m]
+
+    private static final int LINK_UPDATE_INTERVAL = 2000; // [ms]
+
+    private Connection connection;
+
+    private ConsoleInput consoleInput;
+
+    private RadioSource measurementsSource;
+    private LocationSource locationSource;
+    private LinkSource linkSource;
+
+    public MeasurementsCoordinator(Context context, ConsoleInput console, Connection connection) {
+        this.connection = connection;
+        this.consoleInput = console;
+        this.measurementsSource = new RadioSource(context, console);
+        this.locationSource = new LocationSource(context, console, this,
+                MIN_LOCATION_INTERVAL, MAX_LOCATION_CHANGE);
+        this.linkSource = new LinkSource(context, console);
+    }
+
+    public void start() {
+
+        consoleInput.putMessage("SYS: measurements started");
+    }
+
+    public void shutdown() {
+
+        consoleInput.putMessage("SYS: measurements ended");
+    }
+
+    @Override
+    public void onFixed() {
+        consoleInput.putMessage("LOC: fixed");
+    }
+
+    @Override
+    public void onFixLost() {
+        consoleInput.putMessage("LOC: fix lost");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        consoleInput.putMessage("LOC: sending update");
+        connection.sendLocation(location, new Connection.Listener() {
+            @Override
+            public void onSuccess() {
+                Log.e(TAG, "Location sent");
+            }
+            @Override
+            public void onError(String message) {
+                consoleInput.putMessage("ERR: While sending location: " + message);
+            }
+        });
+    }
+}

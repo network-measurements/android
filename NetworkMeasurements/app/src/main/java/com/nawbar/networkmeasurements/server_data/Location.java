@@ -11,6 +11,11 @@ public class Location {
     public double latitude;
     public double longitude;
 
+    public Location(android.location.Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLatitude();
+    }
+
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
         result.put("lat", latitude);

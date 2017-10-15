@@ -16,9 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.nawbar.networkmeasurements.R;
-import com.nawbar.networkmeasurements.measurements.LocationSource;
-import com.nawbar.networkmeasurements.measurements.RadioSource;
 import com.nawbar.networkmeasurements.server_connection.Connection;
+import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter consoleAdapter;
 
     private Connection connection;
-    private RadioSource measurementsSource;
-    private LocationSource locationSource;
+
+    private MeasurementsCoordinator coordinator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ConsoleInput consoleInput = new ConsoleInput() {
+        final ConsoleInput consoleInput = new ConsoleInput() {
             @Override
             public void putMessage(String message) {
                 putConsoleMessage(message);
@@ -57,18 +56,28 @@ public class MainActivity extends AppCompatActivity {
         console.setAdapter(consoleAdapter);
 
         connection = new Connection(this, consoleInput);
-        measurementsSource = new RadioSource(this, consoleInput);
-        locationSource = new LocationSource(this, consoleInput);
+
+        coordinator = new MeasurementsCoordinator(this, consoleInput, connection);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startMeasurement();
-                //connection.startSession();
-                locationSource.startLocalization();
+                Log.e(TAG, "Starting measurements session");
+                connection.startSession(new Connection.Listener() {
+                    @Override
+                    public void onSuccess() {
+                        coordinator.start();
+                    }
+                    @Override
+                    public void onError(String message) {
+                        consoleInput.putMessage("ERR: while starting session: " + message);
+                    }
+                });
             }
         });
+
+        checkPermissions();
 
         Log.e(TAG, "onCreate done");
     }
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationSource.endLocalization();
+        coordinator.shutdown();
     }
 
     public void putConsoleMessage(final String message) {
@@ -89,14 +98,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void startMeasurement() {
-        Log.e(TAG, "startMeasurement");
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+    public void checkPermissions() {
+        int permissionCoarse = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionFine = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCoarse != PackageManager.PERMISSION_GRANTED
+                || permissionFine != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "requestPermissions");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION);
         } else {
-            measurementsSource.measure();
+            putConsoleMessage("SYS: Permissions check successful");
         }
     }
 
@@ -105,9 +116,13 @@ public class MainActivity extends AppCompatActivity {
         Log.e(TAG, "onRequestPermissionsResult");
         switch (requestCode) {
             case REQUEST_PERMISSION:
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Log.e(TAG, "PERMISSION_GRANTED");
-                    measurementsSource.measure();
+                if ((grantResults.length > 1)
+                        && (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.e(TAG, "Permissions granted");
+                    putConsoleMessage("SYS: Permissions granted");
+                } else {
+                    putConsoleMessage("ERR: Can not work without permissions");
                 }
                 break;
 
@@ -118,23 +133,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_clean_console) {
+            consoleAdapter.clear();
+            Log.e(TAG, "Console cleaned");
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

@@ -20,54 +20,66 @@ public class LocationSource implements LocationListener {
 
     private static final String TAG = LocationSource.class.getSimpleName();
 
+    private final int minInterval;
+    private final int maxDistance;
+
     private Context context;
     private ConsoleInput consoleInput;
 
-    public LocationSource(Context context, ConsoleInput console) {
+    private LocationManager locationManager;
+
+    private Listener listener;
+
+    public LocationSource(Context context, ConsoleInput console, Listener listener,
+                          int minInterval, int maxDistance) {
+        this.minInterval = minInterval;
+        this.maxDistance = maxDistance;
         this.context = context;
         this.consoleInput = console;
+        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.listener = listener;
     }
 
     public void startLocalization() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "startLocalization: no permission");
+            // TODO handle this case somehow, permissions check is preformed on app startup
+            Log.e(TAG, "Error, no permissions for localization");
+            consoleInput.putMessage("ERR: No permissions for localization");
+        } else {
+            Log.e(TAG, "Starting localization, interval: " + minInterval + " ms, distance: " + maxDistance + " m");
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minInterval, maxDistance, this);
         }
-        Log.e(TAG, "aaa");
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
     public void endLocalization() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "startLocalization: no permission");
-        }
         locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.e(TAG, "onLocationChanged: " + location.toString());
-        consoleInput.putMessage("Lat: " + location.getLatitude() + " Lon: " + location.getLongitude());
+        listener.onLocationChanged(new com.nawbar.networkmeasurements.server_data.Location(location));
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.e(TAG, "onStatusChanged");
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
         Log.e(TAG, "onProviderEnabled");
-
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         Log.e(TAG, "onProviderDisabled");
+    }
 
+    public interface Listener {
+        void onFixed();
+        void onFixLost();
+        void onLocationChanged(com.nawbar.networkmeasurements.server_data.Location location);
     }
 }
