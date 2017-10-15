@@ -1,28 +1,17 @@
-package com.nawbar.networkmeasurements;
+package com.nawbar.networkmeasurements.measurements;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.telephony.CellIdentityCdma;
-import android.telephony.CellIdentityGsm;
-import android.telephony.CellIdentityLte;
-import android.telephony.CellIdentityWcdma;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
-import android.telephony.CellSignalStrengthCdma;
-import android.telephony.CellSignalStrengthGsm;
-import android.telephony.CellSignalStrengthLte;
-import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.nawbar.networkmeasurements.server.CellData;
-import com.nawbar.networkmeasurements.server.Measurement;
+import com.nawbar.networkmeasurements.view.ConsoleInput;
+import com.nawbar.networkmeasurements.server_data.CellData;
+import com.nawbar.networkmeasurements.server_data.Radio;
 
 import java.util.List;
 
@@ -30,20 +19,20 @@ import java.util.List;
  * Created by Bartosz Nawrot on 2017-10-14.
  */
 
-public class MeasurementsSource {
+public class RadioSource {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = RadioSource.class.getSimpleName();
 
     private final TelephonyManager telephonyManager;
     private final ConsoleInput console;
 
-    public MeasurementsSource(ConsoleInput console, Context context) {
+    public RadioSource(Context context, ConsoleInput console) {
         this.telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         this.console = console;
 
     }
-    public Measurement measure() {
-        Measurement measurement = new Measurement();
+    public Radio measure() {
+        Radio measurement = new Radio();
         List<CellInfo> cells = telephonyManager.getAllCellInfo();
         if (cells != null) {
             for (CellInfo info : cells) {
@@ -69,7 +58,7 @@ public class MeasurementsSource {
                 }
             }
         }
-        measurement.setConnectedOperator(telephonyManager.getNetworkOperator());
+        measurement.setRegisteredOperator(telephonyManager.getNetworkOperator());
         Log.e(TAG, measurement.toString());
         return measurement;
     }

@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements;
+package com.nawbar.networkmeasurements.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -15,6 +15,11 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.nawbar.networkmeasurements.R;
+import com.nawbar.networkmeasurements.measurements.LocationSource;
+import com.nawbar.networkmeasurements.measurements.RadioSource;
+import com.nawbar.networkmeasurements.server_connection.Connection;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView console;
     private ArrayAdapter consoleAdapter;
 
-    private MeasurementsSource measurementsSource;
+    private Connection connection;
+    private RadioSource measurementsSource;
+    private LocationSource locationSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +56,27 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, android.R.id.text1, consoleList);
         console.setAdapter(consoleAdapter);
 
-        measurementsSource = new MeasurementsSource(consoleInput, this);
+        connection = new Connection(this, consoleInput);
+        measurementsSource = new RadioSource(this, consoleInput);
+        locationSource = new LocationSource(this, consoleInput);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMeasurement();
+                //startMeasurement();
+                //connection.startSession();
+                locationSource.startLocalization();
             }
         });
 
         Log.e(TAG, "onCreate done");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locationSource.endLocalization();
     }
 
     public void putConsoleMessage(final String message) {

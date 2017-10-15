@@ -1,9 +1,12 @@
-package com.nawbar.networkmeasurements.server;
+package com.nawbar.networkmeasurements.server_data;
 
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-14.
@@ -64,5 +67,13 @@ public class CellData {
                 ", cgi=" + cgi +
                 ", dbm=" + dbm +
                 '}';
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put("network_type", type.toString());
+        result.put("cell_id", cgi);
+        result.put("signal_strength", dbm);
+        return result;
     }
 }

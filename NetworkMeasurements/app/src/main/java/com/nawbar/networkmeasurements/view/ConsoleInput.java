@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements;
+package com.nawbar.networkmeasurements.view;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-14.
