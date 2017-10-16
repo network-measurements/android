@@ -29,8 +29,8 @@ public class RadioSource {
     public RadioSource(Context context, ConsoleInput console) {
         this.telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         this.console = console;
-
     }
+
     public Radio measure() {
         Radio measurement = new Radio();
         List<CellInfo> cells = telephonyManager.getAllCellInfo();

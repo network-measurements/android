@@ -40,7 +40,7 @@ public class LocationSource implements LocationListener {
         this.listener = listener;
     }
 
-    public void startLocalization() {
+    public void start() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO handle this case somehow, permissions check is preformed on app startup
@@ -52,7 +52,7 @@ public class LocationSource implements LocationListener {
         }
     }
 
-    public void endLocalization() {
+    public void terminate() {
         locationManager.removeUpdates(this);
     }
 

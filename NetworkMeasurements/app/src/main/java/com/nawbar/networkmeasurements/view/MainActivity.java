@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.nawbar.networkmeasurements.R;
+import com.nawbar.networkmeasurements.measurements.LinkSource;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
 import com.nawbar.networkmeasurements.service.MeasurementsService;
@@ -60,12 +61,11 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
                 if (coordinator.isStarted()) {
                     endMeasurements(fab);
                 } else {
-                    startMeasurements(fab);
+                    //startMeasurements(fab);
+                    new LinkSource(MainActivity.this, MainActivity.this).start();
                 }
             }
         });
-
-        //startMeasurementService();
 
         checkPermissions();
 

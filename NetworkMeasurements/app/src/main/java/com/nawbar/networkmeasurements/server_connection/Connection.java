@@ -28,9 +28,15 @@ import java.util.Locale;
 public class Connection {
 
     private static final String TAG = Connection.class.getSimpleName();
+
     private static final String URL = "https://measurements-web-alcatras.c9users.io/";
+    private static final String URL_BASE = URL + "sessions/";
     private static final String URL_PARAM = "?format=json";
-    private static final String SESSIONS = URL + "sessions" + URL_PARAM;
+    private static final String SESSIONS_POST = URL + "sessions" + URL_PARAM;
+    private static final String LOCATION = "/locations" + URL_PARAM;
+    private static final String RADIO = "/radio_measurements" + URL_PARAM;
+    private static final String LINK = "/link_measurements" + URL_PARAM;
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
     private RequestQueue queue;
@@ -56,16 +62,16 @@ public class Connection {
         try {
             args.put("name", name);
             JsonObjectRequest request = new JsonObjectRequest
-                    (Request.Method.POST, SESSIONS, args, new Response.Listener<JSONObject>() {
+                    (Request.Method.POST, SESSIONS_POST, args, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.e(TAG, "onResponse session: " + response.toString());
                             try {
                                 session = response.getString("id");
                                 startTime = System.currentTimeMillis();
-                                locationUrl = URL + "sessions/" + session + "/locations" + URL_PARAM;
-                                radioUrl = URL + "sessions/" + session + "/radios" + URL_PARAM;
-                                linkUrl = URL + "sessions/" + session + "/links" + URL_PARAM;
+                                locationUrl = URL_BASE + session + LOCATION;
+                                radioUrl = URL_BASE + session + RADIO;
+                                linkUrl = URL_BASE + session + LINK;
                                 listener.onSuccess();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -90,7 +96,7 @@ public class Connection {
         try {
             JSONObject args = location.toJson();
             args.put("time", System.currentTimeMillis() - startTime);
-            Log.e(TAG, args.toString());
+            console.putMessage(location.toString());
             JsonObjectRequest request = new JsonObjectRequest
                     (Request.Method.POST, locationUrl, args, new Response.Listener<JSONObject>() {
                         @Override

@@ -5,5 +5,5 @@ package com.nawbar.networkmeasurements.view;
  */
 
 public interface ConsoleInput {
-    public void putMessage(String message);
+    void putMessage(String message);
 }

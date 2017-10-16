@@ -8,14 +8,14 @@ import org.json.JSONObject;
  */
 
 public class Link {
-    public double uplink;
-    public double downlink;
+    public double upLink;
+    public double downLink;
     public double latency;
 
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("uplink", uplink);
-        result.put("downlink", downlink);
+        result.put("up_link", upLink);
+        result.put("down_link", downLink);
         result.put("latency", latency);
         return result;
     }

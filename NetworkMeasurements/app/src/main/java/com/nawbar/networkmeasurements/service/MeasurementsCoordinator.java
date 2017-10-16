@@ -52,7 +52,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     }
 
     public void start() {
-        locationSource.startLocalization();
+        locationSource.start();
         radioTimer = new Timer();
         radioTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -92,7 +92,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     }
 
     public void shutdown() {
-        locationSource.endLocalization();
+        locationSource.terminate();
         radioTimer.cancel();
         radioTimer = null;
         linkTimer.cancel();

@@ -13,7 +13,7 @@ public class Location {
 
     public Location(android.location.Location location) {
         latitude = location.getLatitude();
-        longitude = location.getLatitude();
+        longitude = location.getLongitude();
     }
 
     public JSONObject toJson() throws JSONException {
@@ -21,5 +21,13 @@ public class Location {
         result.put("lat", latitude);
         result.put("lng", longitude);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
     }
 }
