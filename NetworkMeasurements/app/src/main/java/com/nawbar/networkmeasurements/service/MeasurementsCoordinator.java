@@ -7,6 +7,7 @@ import com.nawbar.networkmeasurements.measurements.LinkSource;
 import com.nawbar.networkmeasurements.measurements.LocationSource;
 import com.nawbar.networkmeasurements.measurements.RadioSource;
 import com.nawbar.networkmeasurements.server_connection.Connection;
+import com.nawbar.networkmeasurements.server_data.Link;
 import com.nawbar.networkmeasurements.server_data.Location;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
@@ -48,7 +49,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
         this.measurementsSource = new RadioSource(context, console);
         this.locationSource = new LocationSource(context, console, this,
                 MIN_LOCATION_INTERVAL, MAX_LOCATION_CHANGE);
-        this.linkSource = new LinkSource(context, console);
+        this.linkSource = new LinkSource(console);
     }
 
     public void start() {
@@ -57,34 +58,14 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
         radioTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                //consoleInput.putMessage("NET: measuring eNBs");
-                connection.sendRadio(measurementsSource.measure(), new Connection.Listener() {
-                    @Override
-                    public void onSuccess() {
-                        Log.e(TAG, "Radio sent");
-                    }
-                    @Override
-                    public void onError(String message) {
-                        consoleInput.putMessage("ERR: While sending radio: " + message);
-                    }
-                });
+                sendRadio();
             }
         }, 500, RADIO_MEAS_INTERVAL);
         linkTimer = new Timer();
         linkTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                //consoleInput.putMessage("LNK: capturing link state");
-                connection.sendLink(linkSource.getActualLink(), new Connection.Listener() {
-                    @Override
-                    public void onSuccess() {
-                        Log.e(TAG, "Link sent");
-                    }
-                    @Override
-                    public void onError(String message) {
-                        consoleInput.putMessage("ERR: While sending link: " + message);
-                    }
-                });
+                sendLink();
             }
         }, LINK_UPDATE_INTERVAL, LINK_UPDATE_INTERVAL);
         started = true;
@@ -93,6 +74,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
 
     public void shutdown() {
         locationSource.terminate();
+        linkSource.terminate();
         radioTimer.cancel();
         radioTimer = null;
         linkTimer.cancel();
@@ -122,6 +104,34 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
             @Override
             public void onError(String message) {
                 consoleInput.putMessage("ERR: While sending location: " + message);
+            }
+        });
+    }
+
+    private void sendRadio() {
+        consoleInput.putMessage("NET: measuring eNBs");
+        connection.sendRadio(measurementsSource.measure(), new Connection.Listener() {
+            @Override
+            public void onSuccess() {
+                Log.e(TAG, "Radio sent");
+            }
+            @Override
+            public void onError(String message) {
+                consoleInput.putMessage("ERR: While sending radio: " + message);
+            }
+        });
+    }
+
+    private void sendLink() {
+        consoleInput.putMessage("LNK: capturing link state");
+        connection.sendLink(linkSource.getActualLink(), new Connection.Listener() {
+            @Override
+            public void onSuccess() {
+                Log.e(TAG, "Link sent");
+            }
+            @Override
+            public void onError(String message) {
+                consoleInput.putMessage("ERR: While sending link: " + message);
             }
         });
     }

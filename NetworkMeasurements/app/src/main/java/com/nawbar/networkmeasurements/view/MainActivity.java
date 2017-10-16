@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     private Connection connection;
     private MeasurementsCoordinator coordinator;
 
+    LinkSource link;
+    boolean linkStarted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,16 +56,24 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         connection = new Connection(this, this);
         coordinator = new MeasurementsCoordinator(this, this, connection);
 
+        link = new LinkSource(this);
+        linkStarted = false;
+
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_dialog_map);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (coordinator.isStarted()) {
-                    endMeasurements(fab);
+//                if (coordinator.isStarted()) {
+//                    endMeasurements(fab);
+//                } else {
+//                    startMeasurements(fab);
+//                }
+                if (linkStarted) {
+                    link.terminate();
                 } else {
-                    //startMeasurements(fab);
-                    new LinkSource(MainActivity.this, MainActivity.this).start();
+                    link.start();
+                    linkStarted = true;
                 }
             }
         });
