@@ -9,8 +9,10 @@ import com.nawbar.networkmeasurements.measurements.RadioSource;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.server_data.Link;
 import com.nawbar.networkmeasurements.server_data.Location;
+import com.nawbar.networkmeasurements.server_data.Radio;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,6 +56,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
 
     public void start() {
         locationSource.start();
+        linkSource.start();
         radioTimer = new Timer();
         radioTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -72,7 +75,7 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
         consoleInput.putMessage("SYS: measurements started");
     }
 
-    public void shutdown() {
+    public void terminate() {
         locationSource.terminate();
         linkSource.terminate();
         radioTimer.cancel();
@@ -95,7 +98,8 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
 
     @Override
     public void onLocationChanged(Location location) {
-        consoleInput.putMessage("LOC: sending update");
+        consoleInput.putMessage("LOC: [" + String.format(Locale.ENGLISH, "%.5f", location.latitude) +
+                ", " + String.format(Locale.ENGLISH, "%.5f", location.longitude) + "]");
         connection.sendLocation(location, new Connection.Listener() {
             @Override
             public void onSuccess() {
@@ -109,8 +113,9 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     }
 
     private void sendRadio() {
-        consoleInput.putMessage("NET: measuring eNBs");
-        connection.sendRadio(measurementsSource.measure(), new Connection.Listener() {
+        Radio radio = measurementsSource.measure();
+        consoleInput.putMessage("NET: " + radio.getShortString());
+        connection.sendRadio(radio, new Connection.Listener() {
             @Override
             public void onSuccess() {
                 Log.e(TAG, "Radio sent");
@@ -123,8 +128,10 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     }
 
     private void sendLink() {
-        consoleInput.putMessage("LNK: capturing link state");
-        connection.sendLink(linkSource.getActualLink(), new Connection.Listener() {
+        Link link = linkSource.getActualLink();
+        consoleInput.putMessage("LNK: D: " + String.format(Locale.ENGLISH, "%.2f", link.getDownLinkInMbPS())
+                + " Mb/s, U: " + String.format(Locale.ENGLISH, "%.2f", link.getUpLinkInMbPS()) + " Mb/s");
+        connection.sendLink(link, new Connection.Listener() {
             @Override
             public void onSuccess() {
                 Log.e(TAG, "Link sent");

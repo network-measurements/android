@@ -1,13 +1,13 @@
 package com.nawbar.networkmeasurements.server_data;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.nawbar.networkmeasurements.server_data.CellData.CellType.GSM;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-14.
@@ -75,5 +75,22 @@ public class Radio {
         }
         result.put("cells", array);
         return result;
+    }
+
+    public String getShortString() {
+        if (cells != null && cells.size() > 0) {
+            int gsm = 0, cdma = 0, wcdma = 0, lte = 0;
+            for (CellData c : cells) {
+                switch (c.getType()) {
+                    case GSM: ++gsm; break;
+                    case CDMA: ++cdma; break;
+                    case WCDMA: ++wcdma; break;
+                    case LTE: ++lte; break;
+                }
+            }
+            return "GSM[" + gsm + "], CDMA[" + cdma + "] WCDMA[" + wcdma + "] LTE[" + lte + "]";
+        } else {
+            return "Empty network";
+        }
     }
 }

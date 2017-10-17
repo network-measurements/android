@@ -70,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
 //                    startMeasurements(fab);
 //                }
                 if (linkStarted) {
-                    link.terminate();
+                    coordinator.terminate();
+                    linkStarted = false;
                 } else {
-                    link.start();
+                    coordinator.start();
                     linkStarted = true;
                 }
             }
@@ -106,14 +107,14 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
 
     private void endMeasurements(final FloatingActionButton fab) {
         Log.e(TAG, "Shouting down measurements session");
-        coordinator.shutdown();
+        coordinator.terminate();
         fab.setImageResource(android.R.drawable.ic_dialog_map);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        coordinator.shutdown();
+        coordinator.terminate();
     }
 
     public void putConsoleMessage(final String message) {

@@ -8,9 +8,9 @@ import org.json.JSONObject;
  */
 
 public class Link {
-    public double upLink;
-    public double downLink;
-    public double latency;
+    public double upLink = 0; // [b/s]
+    public double downLink = 0; // [b/s]
+    public double latency = 0; // [ms]
 
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
@@ -18,5 +18,13 @@ public class Link {
         result.put("down_link", downLink);
         result.put("latency", latency);
         return result;
+    }
+
+    public double getUpLinkInMbPS() {
+        return upLink / 1000000;
+    }
+
+    public double getDownLinkInMbPS() {
+        return downLink / 1000000;
     }
 }

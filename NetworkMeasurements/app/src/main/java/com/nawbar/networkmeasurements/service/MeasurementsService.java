@@ -57,7 +57,7 @@ public class MeasurementsService extends Service {
 
     private void endMeasurements() {
         Log.e(TAG, "Shouting measurements session");
-        coordinator.shutdown();
+        coordinator.terminate();
         listener.onMeasurementsShutdown();
     }
 

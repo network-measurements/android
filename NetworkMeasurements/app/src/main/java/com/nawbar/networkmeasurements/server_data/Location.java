@@ -8,8 +8,8 @@ import org.json.JSONObject;
  */
 
 public class Location {
-    public double latitude;
-    public double longitude;
+    public double latitude = 0;
+    public double longitude = 0;
 
     public Location(android.location.Location location) {
         latitude = location.getLatitude();
