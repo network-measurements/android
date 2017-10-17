@@ -71,8 +71,8 @@ public class CellData {
 
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("network_type", type.toString());
         result.put("cell_id", cgi);
+        result.put("cell_type", type.toString());
         result.put("signal_strength", dbm);
         return result;
     }

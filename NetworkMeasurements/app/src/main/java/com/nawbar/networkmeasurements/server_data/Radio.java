@@ -1,5 +1,7 @@
 package com.nawbar.networkmeasurements.server_data;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,8 +15,12 @@ import java.util.List;
 
 public class Radio {
 
-    private int registeredCgi;
+    private static final String TAG = Radio.class.getSimpleName();
+
+    private int registeredCellCgi;
+    private CellData.CellType registeredCellType;
     private String registeredOperator;
+
     private List<CellData> cells;
 
     public Radio() {
@@ -24,7 +30,8 @@ public class Radio {
     public void addCell(CellData cellData, boolean registered) {
         cells.add(cellData);
         if (registered) {
-            registeredCgi = cells.get(cells.size() - 1).getCgi();
+            registeredCellCgi = cells.get(cells.size() - 1).getCgi();
+            registeredCellType = cells.get(cells.size() - 1).getType();
         }
     }
 
@@ -33,11 +40,11 @@ public class Radio {
     }
 
     public int getRegisteredCgi() {
-        return registeredCgi;
+        return registeredCellCgi;
     }
 
     public void setRegisteredCgi(int registeredCgi) {
-        this.registeredCgi = registeredCgi;
+        this.registeredCellCgi = registeredCgi;
     }
 
     public String getRegisteredOperator() {
@@ -51,7 +58,7 @@ public class Radio {
     @Override
     public String toString() {
         return "Radio{" +
-                "registeredCgi=" + registeredCgi +
+                "registeredCgi=" + registeredCellCgi +
                 ", registeredOperator=" + registeredOperator +
                 ", cells=" + cells +
                 '}';
@@ -59,7 +66,8 @@ public class Radio {
 
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("registered_cell_id", registeredCgi);
+        result.put("registered_cell_id", registeredCellCgi);
+        result.put("registered_cell_type", registeredCellType);
         result.put("registered_operator_id", registeredOperator);
         JSONArray array = new JSONArray();
         for (CellData data : cells) {
