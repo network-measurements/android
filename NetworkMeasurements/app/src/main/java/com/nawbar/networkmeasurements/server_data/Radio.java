@@ -73,7 +73,7 @@ public class Radio {
         for (CellData data : cells) {
             array.put(data.toJson());
         }
-        result.put("cells", array);
+        result.put("cell_measurements", array);
         return result;
     }
 

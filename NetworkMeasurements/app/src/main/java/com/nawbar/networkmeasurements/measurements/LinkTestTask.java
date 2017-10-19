@@ -120,13 +120,11 @@ class LinkTestTask implements ISpeedTestListener {
     }
 
     private void updateHistory(double rate) {
-        Log.e(TAG, "---> updateHistory");
         lock.lock();
         history[historyPosition] = rate;
         historyPosition++;
         if (historyPosition >= HISTORY_LENGTH) historyPosition = 0;
         lock.unlock();
-        Log.e(TAG, "<--- updateHistory");
     }
 
     private double computeDownLink() {

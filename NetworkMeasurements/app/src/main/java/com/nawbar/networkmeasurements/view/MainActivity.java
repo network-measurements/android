@@ -64,18 +64,18 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (coordinator.isStarted()) {
-//                    endMeasurements(fab);
-//                } else {
-//                    startMeasurements(fab);
-//                }
-                if (linkStarted) {
-                    coordinator.terminate();
-                    linkStarted = false;
+                if (coordinator.isStarted()) {
+                    endMeasurements(fab);
                 } else {
-                    coordinator.start();
-                    linkStarted = true;
+                    startMeasurements(fab);
                 }
+//                if (linkStarted) {
+//                    coordinator.terminate();
+//                    linkStarted = false;
+//                } else {
+//                    coordinator.start();
+//                    linkStarted = true;
+//                }
             }
         });
 
