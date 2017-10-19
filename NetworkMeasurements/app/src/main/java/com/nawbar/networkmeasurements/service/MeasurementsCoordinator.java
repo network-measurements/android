@@ -130,7 +130,8 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
     private void sendLink() {
         Link link = linkSource.getActualLink();
         consoleInput.putMessage("LNK: D: " + String.format(Locale.ENGLISH, "%.2f", link.getDownLinkInMbPS())
-                + " Mb/s, U: " + String.format(Locale.ENGLISH, "%.2f", link.getUpLinkInMbPS()) + " Mb/s");
+                + " Mb/s, U: " + String.format(Locale.ENGLISH, "%.2f", link.getUpLinkInMbPS()) + " Mb/s"
+                + " L: " + String.format(Locale.ENGLISH, "%.1f", link.latency) + " ms");
         connection.sendLink(link, new Connection.Listener() {
             @Override
             public void onSuccess() {

@@ -3,6 +3,7 @@ package com.nawbar.networkmeasurements.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -64,18 +65,18 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (coordinator.isStarted()) {
-                    endMeasurements(fab);
-                } else {
-                    startMeasurements(fab);
-                }
-//                if (linkStarted) {
-//                    coordinator.terminate();
-//                    linkStarted = false;
+//                if (coordinator.isStarted()) {
+//                    endMeasurements(fab);
 //                } else {
-//                    coordinator.start();
-//                    linkStarted = true;
+//                    startMeasurements(fab);
 //                }
+                if (linkStarted) {
+                    coordinator.terminate();
+                    linkStarted = false;
+                } else {
+                    coordinator.start();
+                    linkStarted = true;
+                }
             }
         });
 

@@ -15,6 +15,7 @@ public class LinkSource {
 
     private LinkTestTask upLinkTest;
     private LinkTestTask downLinkTest;
+    private LatencyTestTask latencyTest;
 
     private Link actualLink;
 
@@ -22,23 +23,26 @@ public class LinkSource {
         this.console = console;
         this.upLinkTest = new LinkTestTask(console, LinkTestTask.Type.UP);
         this.downLinkTest = new LinkTestTask(console, LinkTestTask.Type.DOWN);
+        this.latencyTest = new LatencyTestTask(console);
         this.actualLink = new Link();
     }
 
     public void start() {
         upLinkTest.start();
         downLinkTest.start();
+        latencyTest.start();
     }
 
     public void terminate() {
         upLinkTest.terminate();
         downLinkTest.terminate();
+        latencyTest.terminate();
     }
 
     public Link getActualLink() {
         actualLink.downLink = upLinkTest.getRate();
         actualLink.upLink = downLinkTest.getRate();
-        actualLink.latency = 0;
+        actualLink.latency = latencyTest.getLatency();
         return actualLink;
     }
 }
