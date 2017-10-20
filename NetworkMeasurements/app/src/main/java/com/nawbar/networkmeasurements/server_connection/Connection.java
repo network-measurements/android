@@ -135,7 +135,6 @@ public class Connection {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(TAG, error.toString());
-                            Log.e(TAG, new String(error.networkResponse.data));
                             listener.onError(error.getMessage());
                         }
                     });

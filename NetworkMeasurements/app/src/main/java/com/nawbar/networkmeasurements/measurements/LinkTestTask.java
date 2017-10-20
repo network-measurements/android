@@ -97,8 +97,11 @@ class LinkTestTask implements ISpeedTestListener {
 
     @Override
     public void onError(SpeedTestError speedTestError, String errorMessage) {
-        Log.e(TAG, name + " error: " + errorMessage);
-        console.putMessage("ERR: " + name + " link test: " + errorMessage);
+        Log.e(TAG, name + " error: " + errorMessage + " while "
+                + (!task.isCancelled() ? "running" : "terminating"));
+        if (!task.isCancelled()) {
+            console.putMessage("ERR: " + name + " link test: " + errorMessage);
+        }
     }
 
     private void startCommand() {
