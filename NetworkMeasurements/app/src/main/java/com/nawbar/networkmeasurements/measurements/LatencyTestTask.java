@@ -37,7 +37,7 @@ class LatencyTestTask {
     void start() {
         try {
             initializeHistory();
-            process = Runtime.getRuntime().exec("/system/bin/ping onet.pl");
+            process = Runtime.getRuntime().exec("/system/bin/ping google.pl");
             bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
