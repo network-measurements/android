@@ -1,6 +1,5 @@
 package com.nawbar.networkmeasurements.measurements;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.nawbar.networkmeasurements.view.ConsoleInput;
@@ -8,74 +7,101 @@ import com.nawbar.networkmeasurements.view.ConsoleInput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-19.
  */
 
-class LatencyTestTask extends AsyncTask<Void, Void, String> {
+class LatencyTestTask extends TimerTask{
 
     private static final String TAG = LatencyTestTask.class.getSimpleName();
+
+    private static final int HISTORY_LENGTH = 4;
 
     private final ConsoleInput console;
 
     private Process process;
+    private Timer timer;
+    private BufferedReader bufferedReader;
 
-    private double latency;
-    private ReentrantLock lock = new ReentrantLock();
+    private double history[];
+    private int historyPosition;
 
     LatencyTestTask(ConsoleInput console) {
         this.console = console;
+        initializeHistory();
     }
 
     void start() {
-        execute();
+        try {
+            initializeHistory();
+            process = Runtime.getRuntime().exec("/system/bin/ping onet.pl");
+            bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            timer = new Timer();
+            timer.scheduleAtFixedRate(this, 300, 500);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     void terminate() {
         if (process != null) {
             process.destroy();
         }
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     double getLatency() {
-        lock.lock();
-        double result = latency;
-        lock.unlock();
-        return result;
+        double result = 0;
+        int n = 0;
+        for (double v : history) {
+            if (v != -1.) {
+                result += v;
+                ++n;
+            }
+        }
+        if (n > 0) return result / n;
+        else return 0;
     }
 
     @Override
-    protected String doInBackground(Void... params) {
-        Log.e(TAG, "Staring latency test task");
+    public void run() {
         try {
-            process = Runtime.getRuntime().exec("/system/bin/ping onet.pl");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String inputLine = bufferedReader.readLine();
-            while ((inputLine != null)) {
-                if (inputLine.length() > 0 && inputLine.contains("avg")) {
-                    break;
-                } else {
-                    parseLatency(inputLine);
+            while (bufferedReader.ready()) {
+                String inputLine = bufferedReader.readLine();
+                if (inputLine != null) {
+                    if (inputLine.length() > 0 && inputLine.contains("avg")) {
+                        timer.cancel();
+                        break;
+                    } else {
+                        parseLatency(inputLine);
+                    }
                 }
-                inputLine = bufferedReader.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+    }
+
+    private void initializeHistory() {
+        history = new double[HISTORY_LENGTH];
+        for (int i = 0; i < HISTORY_LENGTH; ++i) {
+            history[i] = -1.;
+        }
+        historyPosition = 0;
     }
 
     private void parseLatency(String input) {
         Log.e(TAG, "Latency input: " + input);
         if (input.contains("time=")) {
             String a = input.substring(input.indexOf("time=") + 5, input.indexOf(" ms"));
-            double value = Double.valueOf(a);
-            lock.lock();
-            latency = value;
-            lock.unlock();
+            history[historyPosition] = Double.valueOf(a);
+            historyPosition++;
+            if (historyPosition >= HISTORY_LENGTH) historyPosition = 0;
         }
     }
 }

@@ -49,6 +49,7 @@ class LinkTestTask implements ISpeedTestListener {
         this.type = type;
         this.socket = new SpeedTestSocket();
         this.socket.addSpeedTestListener(this);
+        initializeHistory();
     }
 
     void start() {

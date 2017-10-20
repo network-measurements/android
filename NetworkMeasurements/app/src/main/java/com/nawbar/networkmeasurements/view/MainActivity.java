@@ -3,7 +3,6 @@ package com.nawbar.networkmeasurements.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     private MeasurementsCoordinator coordinator;
 
     LinkSource link;
-    boolean linkStarted;
+    boolean testStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +57,30 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         coordinator = new MeasurementsCoordinator(this, this, connection);
 
         link = new LinkSource(this);
-        linkStarted = false;
+        testStarted = false;
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_dialog_map);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (coordinator.isStarted()) {
-//                    endMeasurements(fab);
-//                } else {
-//                    startMeasurements(fab);
-//                }
-                if (linkStarted) {
-                    coordinator.terminate();
-                    linkStarted = false;
+                if (coordinator.isStarted()) {
+                    endMeasurements(fab);
                 } else {
-                    coordinator.start();
-                    linkStarted = true;
+                    startMeasurements(fab);
                 }
+//                if (coordinator.isStarted()) {
+//                    coordinator.terminate();
+//                } else {
+//                    coordinator.start();
+//                }
+//                if (testStarted) {
+//                    coordinator.terminate();
+//                    testStarted = false;
+//                } else {
+//                    coordinator.start();
+//                    testStarted = true;
+//                }
             }
         });
 

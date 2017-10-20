@@ -94,55 +94,55 @@ public class Connection {
     }
 
     public void sendLocation(Location location, final Connection.Listener listener) {
-        try {
-            JSONObject args = location.toJson();
-            args.put("time", System.currentTimeMillis() - startTime);
-            console.putMessage(location.toString());
-            JsonObjectRequest request = new JsonObjectRequest
-                    (Request.Method.POST, locationUrl, args, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.e(TAG, "onResponse location: " + response.toString());
-                            listener.onSuccess();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
-                            listener.onError(error.getMessage());
-                        }
-                    });
-            queue.add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            listener.onError(e.getMessage());
-        }
+//        try {
+//            JSONObject args = location.toJson();
+//            args.put("time", System.currentTimeMillis() - startTime);
+//            console.putMessage(location.toString());
+//            JsonObjectRequest request = new JsonObjectRequest
+//                    (Request.Method.POST, locationUrl, args, new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            Log.e(TAG, "onResponse location: " + response.toString());
+//                            listener.onSuccess();
+//                        }
+//                    }, new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.e(TAG, error.toString());
+//                            listener.onError(error.getMessage());
+//                        }
+//                    });
+//            queue.add(request);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            listener.onError(e.getMessage());
+//        }
     }
 
     public void sendRadio(Radio radio, final Connection.Listener listener) {
-        try {
-            JSONObject args = radio.toJson();
-            args.put("time", System.currentTimeMillis() - startTime);
-            JsonObjectRequest request = new JsonObjectRequest
-                    (Request.Method.POST, radioUrl, args, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.e(TAG, "onResponse radio: " + response.toString());
-                            listener.onSuccess();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.toString());
-                            //Log.e(TAG, new String(error.networkResponse.data));
-                            listener.onError(error.getMessage());
-                        }
-                    });
-            queue.add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            listener.onError(e.getMessage());
-        }
+//        try {
+//            JSONObject args = radio.toJson();
+//            args.put("time", System.currentTimeMillis() - startTime);
+//            JsonObjectRequest request = new JsonObjectRequest
+//                    (Request.Method.POST, radioUrl, args, new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            Log.e(TAG, "onResponse radio: " + response.toString());
+//                            listener.onSuccess();
+//                        }
+//                    }, new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.e(TAG, error.toString());
+//                            //Log.e(TAG, new String(error.networkResponse.data));
+//                            listener.onError(error.getMessage());
+//                        }
+//                    });
+//            queue.add(request);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            listener.onError(e.getMessage());
+//        }
     }
 
     public void sendLink(Link link, final Connection.Listener listener) {
