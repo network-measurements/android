@@ -12,8 +12,9 @@ public class Link {
     public double downLink = 0; // [b/s]
     public double latency = 0; // [ms]
 
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
+        result.put("time", time);
         result.put("up_link", upLink);
         result.put("down_link", downLink);
         result.put("latency", latency);

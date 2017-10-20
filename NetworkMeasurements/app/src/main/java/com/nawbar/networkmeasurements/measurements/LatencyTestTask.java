@@ -14,7 +14,7 @@ import java.util.TimerTask;
  * Created by Bartosz Nawrot on 2017-10-19.
  */
 
-class LatencyTestTask extends TimerTask{
+class LatencyTestTask {
 
     private static final String TAG = LatencyTestTask.class.getSimpleName();
 
@@ -40,7 +40,26 @@ class LatencyTestTask extends TimerTask{
             process = Runtime.getRuntime().exec("/system/bin/ping onet.pl");
             bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             timer = new Timer();
-            timer.scheduleAtFixedRate(this, 300, 500);
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        while (bufferedReader.ready()) {
+                            String inputLine = bufferedReader.readLine();
+                            if (inputLine != null) {
+                                if (inputLine.length() > 0 && inputLine.contains("avg")) {
+                                    timer.cancel();
+                                    break;
+                                } else {
+                                    parseLatency(inputLine);
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 300, 500);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,25 +85,6 @@ class LatencyTestTask extends TimerTask{
         }
         if (n > 0) return result / n;
         else return 0;
-    }
-
-    @Override
-    public void run() {
-        try {
-            while (bufferedReader.ready()) {
-                String inputLine = bufferedReader.readLine();
-                if (inputLine != null) {
-                    if (inputLine.length() > 0 && inputLine.contains("avg")) {
-                        timer.cancel();
-                        break;
-                    } else {
-                        parseLatency(inputLine);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void initializeHistory() {

@@ -64,11 +64,12 @@ public class Radio {
                 '}';
     }
 
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
+        result.put("time", time);
         result.put("registered_cell_id", registeredCellCgi);
         result.put("registered_cell_type", registeredCellType);
-        result.put("registered_operator_id", registeredOperator);
+        result.put("registered_operator", registeredOperator);
         JSONArray array = new JSONArray();
         for (CellData data : cells) {
             array.put(data.toJson());

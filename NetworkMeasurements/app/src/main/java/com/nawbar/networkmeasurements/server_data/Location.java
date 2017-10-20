@@ -16,8 +16,9 @@ public class Location {
         longitude = location.getLongitude();
     }
 
-    public JSONObject toJson() throws JSONException {
+    public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
+        result.put("time", time);
         result.put("lat", latitude);
         result.put("lng", longitude);
         return result;
