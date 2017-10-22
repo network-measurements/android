@@ -40,8 +40,8 @@ public class LinkSource {
     }
 
     public Link getActualLink() {
-        actualLink.downLink = upLinkTest.getRate();
-        actualLink.upLink = downLinkTest.getRate();
+        actualLink.upLink = upLinkTest.getRate();
+        actualLink.downLink = downLinkTest.getRate();
         actualLink.latency = latencyTest.getLatency();
         return actualLink;
     }

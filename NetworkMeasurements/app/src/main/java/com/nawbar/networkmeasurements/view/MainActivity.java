@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         console = (ListView) findViewById(R.id.console);
         List<String> consoleList = new ArrayList<>();
         consoleAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, consoleList);
+                R.layout.console_row, R.id.text_row, consoleList);
         console.setAdapter(consoleAdapter);
 
         connection = new Connection(this, this);

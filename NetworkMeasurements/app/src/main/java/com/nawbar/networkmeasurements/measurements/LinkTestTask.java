@@ -22,7 +22,7 @@ class LinkTestTask implements ISpeedTestListener {
 
     private static final String TAG = LinkSource.class.getSimpleName();
 
-    private static final int START_DELAY = 1000;
+    private static final int START_DELAY = 500;
     private static final int UPDATE_INTERVAL = 1000;
     private static final int HISTORY_LENGTH = 4;
 
