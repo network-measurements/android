@@ -36,25 +36,20 @@ public class RadioSource {
         List<CellInfo> cells = telephonyManager.getAllCellInfo();
         if (cells != null) {
             Log.e(TAG, "Found cells: " + cells.size());
+            boolean foundRegistered = false;
             for (CellInfo info : cells) {
-                if (info instanceof CellInfoGsm) {
-                    if (isValidGsmCell((CellInfoGsm) info)) {
-                        measurement.addCell(new CellData((CellInfoGsm) info), info.isRegistered());
+                if (info.isRegistered()) {
+                    pushCell(measurement, info);
+                    foundRegistered = true;
+                    Log.e(TAG, "Found registered cell: " + info.toString());
+                    break;
+                }
+            }
+            if (foundRegistered) {
+                for (CellInfo info : cells) {
+                    if (!info.isRegistered()) {
+                        pushCell(measurement, info);
                     }
-                } else if (info instanceof CellInfoCdma) {
-                    if (isValidCdmaCell((CellInfoCdma) info)) {
-                        measurement.addCell(new CellData((CellInfoCdma) info), info.isRegistered());
-                    }
-                } else if (info instanceof CellInfoWcdma) {
-                    if (isValidWcdmaCell((CellInfoWcdma) info)) {
-                        measurement.addCell(new CellData((CellInfoWcdma) info), info.isRegistered());
-                    }
-                } else if (info instanceof CellInfoLte) {
-                    if (isValidLteCell((CellInfoLte) info)) {
-                        measurement.addCell(new CellData((CellInfoLte) info), info.isRegistered());
-                    }
-                } else {
-                    Log.i(TAG, "Unknown cell type");
                 }
             }
         }
@@ -69,9 +64,26 @@ public class RadioSource {
 //            CellData cd = new CellData(CellData.CellType.LTE, sb, s);
 //            measurement.addCell(cd, i == 0);
 //        }
-        measurement.setRegisteredOperator(telephonyManager.getNetworkOperator());
         Log.e(TAG, measurement.toString());
         return measurement;
+    }
+
+    private void pushCell(Radio measurement, CellInfo info) {
+        if (info instanceof CellInfoGsm) {
+            if (isValidGsmCell((CellInfoGsm) info)) {
+                measurement.addCell(new CellData((CellInfoGsm) info));
+            } else Log.e(TAG, "Invalid GSM cell: " + info.toString());
+        } else if (info instanceof CellInfoWcdma) {
+            if (isValidWcdmaCell((CellInfoWcdma) info)) {
+                measurement.addCell(new CellData((CellInfoWcdma) info));
+            } else Log.e(TAG, "Invalid WCDMA cell: " + info.toString());
+        } else if (info instanceof CellInfoLte) {
+            if (isValidLteCell((CellInfoLte) info)) {
+                measurement.addCell(new CellData((CellInfoLte) info));
+            } else Log.e(TAG, "Invalid LTE cell: " + info.toString());
+        } else {
+            Log.i(TAG, "Unknown cell type");
+        }
     }
 
     private boolean isValidGsmCell(CellInfoGsm info) {
@@ -79,10 +91,6 @@ public class RadioSource {
     }
 
     private boolean isValidWcdmaCell(CellInfoWcdma info) {
-        return true;
-    }
-
-    private boolean isValidCdmaCell(CellInfoCdma info) {
         return true;
     }
 

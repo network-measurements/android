@@ -19,94 +19,62 @@ import org.json.JSONObject;
 public class CellData {
     public enum CellType {
         GSM,
-        CDMA,
         WCDMA,
         LTE
     }
 
     private CellType type;
-    private String cgi;
+    private int mnc;
+    private int mcc;
+    private int cellId;
     private int dbm;
 
-    public CellData(CellType type, String cgi, int dbm) {
+    public CellData(CellType type, int mnc, int mcc, int cellId, int dbm) {
         this.type = type;
-        this.cgi = cgi;
+        this.mnc = mnc;
+        this.mcc = mcc;
+        this.cellId = cellId;
         this.dbm = dbm;
     }
 
     public CellData(CellInfoGsm cellInfo) {
         this.type = CellType.GSM;
-        this.cgi = identityToString(cellInfo.getCellIdentity());
-        this.dbm = cellInfo.getCellSignalStrength().getDbm();
-    }
-
-    public CellData(CellInfoCdma cellInfo) {
-        this.type = CellType.CDMA;
-        this.cgi = identityToString(cellInfo.getCellIdentity());
+        this.mnc = cellInfo.getCellIdentity().getMnc();
+        this.mcc = cellInfo.getCellIdentity().getMcc();
+        this.cellId = cellInfo.getCellIdentity().getCid();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
     }
 
     public CellData(CellInfoWcdma cellInfo) {
         this.type = CellType.WCDMA;
-        this.cgi = identityToString(cellInfo.getCellIdentity());
+        this.mnc = cellInfo.getCellIdentity().getMnc();
+        this.mcc = cellInfo.getCellIdentity().getMcc();
+        this.cellId = cellInfo.getCellIdentity().getCid();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
     }
 
     public CellData(CellInfoLte cellInfo) {
         this.type = CellType.LTE;
-        this.cgi = identityToString(cellInfo.getCellIdentity());
+        this.mnc = cellInfo.getCellIdentity().getMnc();
+        this.mcc = cellInfo.getCellIdentity().getMcc();
+        this.cellId = cellInfo.getCellIdentity().getCi();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
-    }
-
-    private String identityToString(CellIdentityGsm identity) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Mcc=").append(identity.getMcc());
-        sb.append(",Mnc=").append(identity.getMnc());
-        //sb.append(",Lac=").append(identity.getLac());
-        sb.append(",Cid=").append(identity.getCid());
-        //sb.append(",mArfcn=").append(identityGsm.getArfcn());
-        //sb.append(",mBsic=").append("0x").append(Integer.toHexString(identity.getBsic()));
-        return sb.toString();
-    }
-
-    private String identityToString(CellIdentityCdma identity) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("NetworkId="); sb.append(identity.getNetworkId());
-        sb.append(",SystemId="); sb.append(identity.getSystemId());
-        sb.append(",BasestationId="); sb.append(identity.getBasestationId());
-        //sb.append(",Longitude="); sb.append(identity.getLongitude());
-        //sb.append(",Latitude="); sb.append(identity.getLatitude());
-        return sb.toString();
-    }
-
-    private String identityToString(CellIdentityWcdma identity) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Mcc=").append(identity.getMcc());
-        sb.append(",Mnc=").append(identity.getMnc());
-        //sb.append(",Lac=").append(identity.getLac());
-        sb.append(",Cid=").append(identity.getCid());
-        //sb.append(",Psc=").append(identity.getPsc());
-        //sb.append(",Uarfcn=").append(identity.getUarfcn());
-        return sb.toString();
-    }
-
-    private String identityToString(CellIdentityLte identity) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Mcc="); sb.append(identity.getMcc());
-        sb.append(",Mnc="); sb.append(identity.getMnc());
-        //sb.append(",Ci="); sb.append(identity.getCi());
-        sb.append(",Pci="); sb.append(identity.getPci());
-        //sb.append(",Tac="); sb.append(identity.getTac());
-        //sb.append(",Earfcn="); sb.append(identity.getEarfcn());
-        return sb.toString();
     }
 
     public CellType getType() {
         return type;
     }
 
-    public String getCgi() {
-        return cgi;
+    public int getMnc() {
+        return mnc;
+    }
+
+    public int getMcc() {
+        return mcc;
+    }
+
+    public int getCellId() {
+        return cellId;
     }
 
     public int getDbm() {
@@ -117,15 +85,19 @@ public class CellData {
     public String toString() {
         return "CellData{" +
                 "type=" + type +
-                ", cgi=" + cgi +
+                ", mnc=" + mnc +
+                ", mcc=" + mcc +
+                ", cellId=" + cellId +
                 ", dbm=" + dbm +
                 '}';
     }
 
-    public JSONObject toJson() throws JSONException {
+    JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("cell_id", cgi);
-        result.put("cell_type", type.toString());
+        result.put("type", type.toString());
+        result.put("mnc", mnc);
+        result.put("mcc", mcc);
+        result.put("cell_id", cellId);
         result.put("signal_strength", dbm);
         return result;
     }
