@@ -18,7 +18,7 @@ class LatencyTestTask {
 
     private static final String TAG = LatencyTestTask.class.getSimpleName();
 
-    private static final int HISTORY_LENGTH = 4;
+    private static final int HISTORY_LENGTH = 3;
 
     private final ConsoleInput console;
 

@@ -24,7 +24,7 @@ class LinkTestTask implements ISpeedTestListener {
 
     private static final int START_DELAY = 500;
     private static final int UPDATE_INTERVAL = 1000;
-    private static final int HISTORY_LENGTH = 4;
+    private static final int HISTORY_LENGTH = 3;
 
     enum Type {
         DOWN,

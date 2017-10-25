@@ -62,7 +62,7 @@ public class CellData {
         StringBuilder sb = new StringBuilder();
         sb.append("Mcc=").append(identity.getMcc());
         sb.append(",Mnc=").append(identity.getMnc());
-        sb.append(",Lac=").append(identity.getLac());
+        //sb.append(",Lac=").append(identity.getLac());
         sb.append(",Cid=").append(identity.getCid());
         //sb.append(",mArfcn=").append(identityGsm.getArfcn());
         //sb.append(",mBsic=").append("0x").append(Integer.toHexString(identity.getBsic()));
@@ -74,8 +74,8 @@ public class CellData {
         sb.append("NetworkId="); sb.append(identity.getNetworkId());
         sb.append(",SystemId="); sb.append(identity.getSystemId());
         sb.append(",BasestationId="); sb.append(identity.getBasestationId());
-        sb.append(",Longitude="); sb.append(identity.getLongitude());
-        sb.append(",Latitude="); sb.append(identity.getLatitude());
+        //sb.append(",Longitude="); sb.append(identity.getLongitude());
+        //sb.append(",Latitude="); sb.append(identity.getLatitude());
         return sb.toString();
     }
 
@@ -83,9 +83,9 @@ public class CellData {
         StringBuilder sb = new StringBuilder();
         sb.append("Mcc=").append(identity.getMcc());
         sb.append(",Mnc=").append(identity.getMnc());
-        sb.append(",Lac=").append(identity.getLac());
+        //sb.append(",Lac=").append(identity.getLac());
         sb.append(",Cid=").append(identity.getCid());
-        sb.append(",Psc=").append(identity.getPsc());
+        //sb.append(",Psc=").append(identity.getPsc());
         //sb.append(",Uarfcn=").append(identity.getUarfcn());
         return sb.toString();
     }
@@ -94,9 +94,9 @@ public class CellData {
         StringBuilder sb = new StringBuilder();
         sb.append("Mcc="); sb.append(identity.getMcc());
         sb.append(",Mnc="); sb.append(identity.getMnc());
-        sb.append(",Ci="); sb.append(identity.getCi());
+        //sb.append(",Ci="); sb.append(identity.getCi());
         sb.append(",Pci="); sb.append(identity.getPci());
-        sb.append(",Tac="); sb.append(identity.getTac());
+        //sb.append(",Tac="); sb.append(identity.getTac());
         //sb.append(",Earfcn="); sb.append(identity.getEarfcn());
         return sb.toString();
     }
