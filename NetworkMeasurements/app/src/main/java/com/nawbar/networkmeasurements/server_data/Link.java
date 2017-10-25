@@ -15,9 +15,9 @@ public class Link {
     public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
         result.put("time", time);
-        result.put("uplink", upLink);
-        result.put("downlink", downLink);
-        result.put("latency", latency);
+        result.put("uplink", (long)upLink);
+        result.put("downlink", (long)downLink);
+        result.put("latency", (long)latency);
         return result;
     }
 

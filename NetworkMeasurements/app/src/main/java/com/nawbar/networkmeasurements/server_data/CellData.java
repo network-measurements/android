@@ -1,10 +1,5 @@
 package com.nawbar.networkmeasurements.server_data;
 
-import android.telephony.CellIdentityCdma;
-import android.telephony.CellIdentityGsm;
-import android.telephony.CellIdentityLte;
-import android.telephony.CellIdentityWcdma;
-import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
@@ -27,13 +22,15 @@ public class CellData {
     private int mnc;
     private int mcc;
     private int cellId;
+    private int areaCode;
     private int dbm;
 
-    public CellData(CellType type, int mnc, int mcc, int cellId, int dbm) {
+    public CellData(CellType type, int mnc, int mcc, int cellId, int areaCode, int dbm) {
         this.type = type;
         this.mnc = mnc;
         this.mcc = mcc;
         this.cellId = cellId;
+        this.areaCode = areaCode;
         this.dbm = dbm;
     }
 
@@ -42,6 +39,7 @@ public class CellData {
         this.mnc = cellInfo.getCellIdentity().getMnc();
         this.mcc = cellInfo.getCellIdentity().getMcc();
         this.cellId = cellInfo.getCellIdentity().getCid();
+        this.areaCode = cellInfo.getCellIdentity().getLac();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
     }
 
@@ -50,6 +48,7 @@ public class CellData {
         this.mnc = cellInfo.getCellIdentity().getMnc();
         this.mcc = cellInfo.getCellIdentity().getMcc();
         this.cellId = cellInfo.getCellIdentity().getCid();
+        this.areaCode = cellInfo.getCellIdentity().getLac();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
     }
 
@@ -58,6 +57,7 @@ public class CellData {
         this.mnc = cellInfo.getCellIdentity().getMnc();
         this.mcc = cellInfo.getCellIdentity().getMcc();
         this.cellId = cellInfo.getCellIdentity().getCi();
+        this.areaCode = cellInfo.getCellIdentity().getTac();
         this.dbm = cellInfo.getCellSignalStrength().getDbm();
     }
 
@@ -77,6 +77,10 @@ public class CellData {
         return cellId;
     }
 
+    public int getAreaCode() {
+        return areaCode;
+    }
+
     public int getDbm() {
         return dbm;
     }
@@ -88,6 +92,7 @@ public class CellData {
                 ", mnc=" + mnc +
                 ", mcc=" + mcc +
                 ", cellId=" + cellId +
+                ", areaCode=" + areaCode +
                 ", dbm=" + dbm +
                 '}';
     }
@@ -98,6 +103,7 @@ public class CellData {
         result.put("mnc", mnc);
         result.put("mcc", mcc);
         result.put("cell_id", cellId);
+        result.put("area_code", areaCode);
         result.put("signal_strength", dbm);
         return result;
     }

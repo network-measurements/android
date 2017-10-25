@@ -31,6 +31,13 @@ public class Radio {
         return cells;
     }
 
+    @Override
+    public String toString() {
+        return "Radio{" +
+                "cells=" + cells +
+                '}';
+    }
+
     public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
         result.put("time", time);
