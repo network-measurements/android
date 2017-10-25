@@ -146,28 +146,28 @@ public class Connection {
     }
 
     public void sendLink(Link link, final Connection.Listener listener) {
-//        try {
-//            JSONObject args = link.toJson(System.currentTimeMillis() - startTime);
-//            Log.e(TAG, args.toString());
-//            JsonObjectRequest request = new JsonObjectRequest
-//                    (Request.Method.POST, linkUrl, args, new Response.Listener<JSONObject>() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            Log.e(TAG, "onResponse link: " + response.toString());
-//                            listener.onSuccess();
-//                        }
-//                    }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.e(TAG, error.toString());
-//                            listener.onError(error.getMessage());
-//                        }
-//                    });
-//            queue.add(request);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            listener.onError(e.getMessage());
-//        }
+        try {
+            JSONObject args = link.toJson(System.currentTimeMillis() - startTime);
+            Log.e(TAG, args.toString());
+            JsonObjectRequest request = new JsonObjectRequest
+                    (Request.Method.POST, linkUrl, args, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.e(TAG, "onResponse link: " + response.toString());
+                            listener.onSuccess();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, error.toString());
+                            listener.onError(error.getMessage());
+                        }
+                    });
+            queue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            listener.onError(e.getMessage());
+        }
     }
 
     private String createSessionName() {

@@ -17,8 +17,8 @@ public class Radio {
 
     private static final String TAG = Radio.class.getSimpleName();
 
-    private int registeredCellCgi;
     private CellData.CellType registeredCellType;
+    private String registeredCellCgi;
     private String registeredOperator;
 
     private List<CellData> cells;
@@ -30,8 +30,8 @@ public class Radio {
     public void addCell(CellData cellData, boolean registered) {
         cells.add(cellData);
         if (registered) {
-            registeredCellCgi = cells.get(cells.size() - 1).getCgi();
             registeredCellType = cells.get(cells.size() - 1).getType();
+            registeredCellCgi = cells.get(cells.size() - 1).getCgi();
         }
     }
 
@@ -39,11 +39,11 @@ public class Radio {
         return cells;
     }
 
-    public int getRegisteredCgi() {
+    public String getRegisteredCgi() {
         return registeredCellCgi;
     }
 
-    public void setRegisteredCgi(int registeredCgi) {
+    public void setRegisteredCgi(String registeredCgi) {
         this.registeredCellCgi = registeredCgi;
     }
 

@@ -15,17 +15,17 @@ public class Link {
     public JSONObject toJson(long time) throws JSONException {
         JSONObject result = new JSONObject();
         result.put("time", time);
-        result.put("up_link", upLink);
-        result.put("down_link", downLink);
+        result.put("uplink", upLink);
+        result.put("downlink", downLink);
         result.put("latency", latency);
         return result;
     }
 
-    public double getUpLinkInMbPS() {
+    public double getUpLinkInMbps() {
         return upLink / 1000000;
     }
 
-    public double getDownLinkInMbPS() {
+    public double getDownLinkInMbps() {
         return downLink / 1000000;
     }
 }

@@ -58,6 +58,17 @@ public class RadioSource {
                 }
             }
         }
+//        int size = (int)(Math.random() * 10) + 1;
+//        for (int i = 0; i < size; i++) {
+//            int s = (int)(-60 - Math.random() * 30);
+//            String sb = "Mcc=" + i +
+//                    ",Mnc=" + 2 * i +
+//                    ",Ci=" + 3 * i +
+//                    ",Pci=" + 4 * i +
+//                    ",Tac=" + 5 * i;
+//            CellData cd = new CellData(CellData.CellType.LTE, sb, s);
+//            measurement.addCell(cd, i == 0);
+//        }
         measurement.setRegisteredOperator(telephonyManager.getNetworkOperator());
         Log.e(TAG, measurement.toString());
         return measurement;
