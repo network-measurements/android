@@ -53,7 +53,7 @@ public class Radio {
                     case LTE: ++lte; break;
                 }
             }
-            return "GSM[" + gsm + "], WCDMA[" + wcdma + "] LTE[" + lte + "], SS: "
+            return "GSM[" + gsm + "], WCDMA[" + wcdma + "] LTE[" + lte + "], RSS: "
                     + reg_strength + "dBm";
         } else {
             return "Empty network";
