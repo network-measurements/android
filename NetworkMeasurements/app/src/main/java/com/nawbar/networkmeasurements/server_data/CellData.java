@@ -99,12 +99,14 @@ public class CellData {
 
     JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("type", type.toString());
-        result.put("mnc", mnc);
-        result.put("mcc", mcc);
-        result.put("cell_id", cellId);
-        result.put("area_code", areaCode);
         result.put("signal_strength", dbm);
+        JSONObject cell = new JSONObject();
+        cell.put("cell_type", type.toString());
+        cell.put("mnc", mnc);
+        cell.put("mcc", mcc);
+        cell.put("cell_id", cellId);
+        cell.put("area_code", areaCode);
+        result.put("cell", cell);
         return result;
     }
 }
