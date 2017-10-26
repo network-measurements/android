@@ -22,9 +22,8 @@ class LinkTestTask implements ISpeedTestListener {
 
     private static final String TAG = LinkSource.class.getSimpleName();
 
-    private static final int START_DELAY = 500;
+    private static final int START_DELAY = 1000;
     private static final int UPDATE_INTERVAL = 1000;
-    private static final int HISTORY_LENGTH = 3;
 
     enum Type {
         DOWN,
@@ -39,9 +38,8 @@ class LinkTestTask implements ISpeedTestListener {
     private AsyncTask<Void, Void, String> task;
     private SpeedTestSocket socket;
 
-    private double history[];
-    private int historyPosition;
     private Lock lock = new ReentrantLock();
+    private double rate;
 
     LinkTestTask(ConsoleInput console, Type type) {
         this.console = console;
@@ -49,11 +47,11 @@ class LinkTestTask implements ISpeedTestListener {
         this.type = type;
         this.socket = new SpeedTestSocket();
         this.socket.addSpeedTestListener(this);
-        initializeHistory();
+        this.rate = 0.0;
     }
 
     void start() {
-        initializeHistory();
+        rate = 0.0;
         startTask();
     }
 
@@ -63,7 +61,10 @@ class LinkTestTask implements ISpeedTestListener {
     }
 
     double getRate() {
-        return computeDownLink();
+        lock.lock();
+        double result = rate;
+        lock.unlock();
+        return result;
     }
 
     private void startTask() {
@@ -85,14 +86,14 @@ class LinkTestTask implements ISpeedTestListener {
     @Override
     public void onCompletion(SpeedTestReport report) {
         System.out.println(name + " completed: bit/s: " + report.getTransferRateBit());
-        updateHistory(report.getTransferRateBit().doubleValue());
+        setRate(report.getTransferRateBit().doubleValue());
         startTask();
     }
 
     @Override
     public void onProgress(float percent, SpeedTestReport report) {
         System.out.println(name + " progress: " + percent + "%, bit/s: " + report.getTransferRateBit());
-        updateHistory(report.getTransferRateBit().doubleValue());
+        setRate(report.getTransferRateBit().doubleValue());
     }
 
     @Override
@@ -115,34 +116,9 @@ class LinkTestTask implements ISpeedTestListener {
         }
     }
 
-    private void initializeHistory() {
-        history = new double[HISTORY_LENGTH];
-        for (int i = 0; i < HISTORY_LENGTH; ++i) {
-            history[i] = -1.;
-        }
-        historyPosition = 0;
-    }
-
-    private void updateHistory(double rate) {
+    private void setRate(double current) {
         lock.lock();
-        history[historyPosition] = rate;
-        historyPosition++;
-        if (historyPosition >= HISTORY_LENGTH) historyPosition = 0;
+        rate = current;
         lock.unlock();
-    }
-
-    private double computeDownLink() {
-        double result = 0;
-        int n = 0;
-        lock.lock();
-        for (double v : history) {
-            if (v != -1.) {
-                result += v;
-                ++n;
-            }
-        }
-        lock.unlock();
-        if (n > 0) return result / n;
-        else return 0;
     }
 }

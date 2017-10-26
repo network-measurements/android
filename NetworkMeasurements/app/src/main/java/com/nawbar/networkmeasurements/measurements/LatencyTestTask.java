@@ -18,25 +18,22 @@ class LatencyTestTask {
 
     private static final String TAG = LatencyTestTask.class.getSimpleName();
 
-    private static final int HISTORY_LENGTH = 3;
-
     private final ConsoleInput console;
 
     private Process process;
     private Timer timer;
     private BufferedReader bufferedReader;
 
-    private double history[];
-    private int historyPosition;
+    private double latency;
 
     LatencyTestTask(ConsoleInput console) {
         this.console = console;
-        initializeHistory();
+        this.latency = 0.0;
     }
 
     void start() {
         try {
-            initializeHistory();
+            latency = 0.0;
             process = Runtime.getRuntime().exec("/system/bin/ping google.pl");
             bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             timer = new Timer();
@@ -75,33 +72,14 @@ class LatencyTestTask {
     }
 
     double getLatency() {
-        double result = 0;
-        int n = 0;
-        for (double v : history) {
-            if (v != -1.) {
-                result += v;
-                ++n;
-            }
-        }
-        if (n > 0) return result / n;
-        else return 0;
-    }
-
-    private void initializeHistory() {
-        history = new double[HISTORY_LENGTH];
-        for (int i = 0; i < HISTORY_LENGTH; ++i) {
-            history[i] = -1.;
-        }
-        historyPosition = 0;
+        return latency;
     }
 
     private void parseLatency(String input) {
         Log.e(TAG, "Latency input: " + input);
         if (input.contains("time=")) {
             String a = input.substring(input.indexOf("time=") + 5, input.indexOf(" ms"));
-            history[historyPosition] = Double.valueOf(a);
-            historyPosition++;
-            if (historyPosition >= HISTORY_LENGTH) historyPosition = 0;
+            latency = Double.valueOf(a);
         }
     }
 }
