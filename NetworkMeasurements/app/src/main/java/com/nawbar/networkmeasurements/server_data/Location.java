@@ -11,9 +11,14 @@ public class Location {
     public double latitude = 0;
     public double longitude = 0;
 
+    public Location(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public Location(android.location.Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
     public JSONObject toJson(long time) throws JSONException {
