@@ -72,7 +72,8 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
             }
         }, LINK_UPDATE_INTERVAL, LINK_UPDATE_INTERVAL);
         started = true;
-        consoleInput.putMessage("SYS: measurements started");
+        consoleInput.putMessage("SYS: measurements started, session ID: "
+                + connection.getSessionId());
     }
 
     public void terminate() {
@@ -127,7 +128,16 @@ public class MeasurementsCoordinator implements LocationSource.Listener {
         });
     }
 
+    private Location prevLocation = null;
+
     private void sendLink() {
+//        if (prevLocation != null) {
+//            prevLocation.latitude += (Math.random() - 0.6) / 30000;
+//            prevLocation.longitude += (Math.random() - 0.4) / 40000;
+//        } else {
+//            prevLocation = new Location(50.0, 20.0);
+//        }
+//        onLocationChanged(prevLocation);
         Link link = linkSource.getActualLink();
         consoleInput.putMessage("LNK: D: " + String.format(Locale.ENGLISH, "%.2f", link.getDownLinkInMbps())
                 + " Mb/s, U: " + String.format(Locale.ENGLISH, "%.2f", link.getUpLinkInMbps()) + " Mb/s"

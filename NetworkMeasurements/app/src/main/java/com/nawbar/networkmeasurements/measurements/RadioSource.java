@@ -53,16 +53,17 @@ public class RadioSource {
                 }
             }
         }
-//        int size = (int)(Math.random() * 10) + 1;
+//        int size = (int)(Math.random() * 3) + 1;
 //        for (int i = 0; i < size; i++) {
 //            int s = (int)(-60 - Math.random() * 30);
-//            String sb = "Mcc=" + i +
-//                    ",Mnc=" + 2 * i +
-//                    ",Ci=" + 3 * i +
-//                    ",Pci=" + 4 * i +
-//                    ",Tac=" + 5 * i;
-//            CellData cd = new CellData(CellData.CellType.LTE, sb, s);
-//            measurement.addCell(cd, i == 0);
+//            int cellId = 2147483647;
+//            int areaCode = 2147483647;
+//            if (i == 0) {
+//                cellId = 1700494;
+//                areaCode = 206;
+//            }
+//            CellData cd = new CellData(CellData.CellType.WCDMA, 260, 6, cellId, areaCode, s);
+//            measurement.addCell(cd);
 //        }
         Log.e(TAG, measurement.toString());
         return measurement;

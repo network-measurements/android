@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -14,7 +13,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.nawbar.networkmeasurements.measurements.LocationSource;
 import com.nawbar.networkmeasurements.server_data.Link;
 import com.nawbar.networkmeasurements.server_data.Location;
 import com.nawbar.networkmeasurements.server_data.Radio;
@@ -24,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -50,7 +47,7 @@ public class Connection {
 
     private ConsoleInput console;
 
-    private String session;
+    private String sessionId;
     private long startTime;
 
     private String locationUrl;
@@ -64,7 +61,7 @@ public class Connection {
 
     public void startSession(final Listener listener) {
         String name = createSessionName();
-        console.putMessage("CON: Starting session \"" + name + "\"");
+        console.putMessage("CON: Starting sessionId \"" + name + "\"");
         try {
             JSONObject args = new JSONObject();
             args.put("name", name);
@@ -73,17 +70,17 @@ public class Connection {
                     (Request.Method.POST, SESSIONS_POST, args, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.e(TAG, "onResponse session: " + response.toString());
+                            Log.e(TAG, "onResponse sessionId: " + response.toString());
                             try {
-                                session = response.getString("id");
+                                sessionId = response.getString("id");
                                 startTime = System.currentTimeMillis();
-                                locationUrl = URL_BASE + session + LOCATION;
-                                radioUrl = URL_BASE + session + RADIO;
-                                linkUrl = URL_BASE + session + LINK;
+                                locationUrl = URL_BASE + sessionId + LOCATION;
+                                radioUrl = URL_BASE + sessionId + RADIO;
+                                linkUrl = URL_BASE + sessionId + LINK;
                                 listener.onSuccess();
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                listener.onError("Failed to retrieve session ID");
+                                listener.onError("Failed to retrieve sessionId ID");
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -198,6 +195,10 @@ public class Connection {
             message = "Connection error";
         }
         return message;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     public interface Listener {
