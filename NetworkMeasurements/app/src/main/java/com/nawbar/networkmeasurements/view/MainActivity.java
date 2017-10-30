@@ -75,13 +75,6 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
 //                } else {
 //                    coordinator.start();
 //                }
-//                if (testStarted) {
-//                    coordinator.terminate();
-//                    testStarted = false;
-//                } else {
-//                    coordinator.start();
-//                    testStarted = true;
-//                }
             }
         });
 

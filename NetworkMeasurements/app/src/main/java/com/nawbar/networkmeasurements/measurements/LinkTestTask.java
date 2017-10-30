@@ -68,6 +68,10 @@ class LinkTestTask implements ISpeedTestListener {
     }
 
     private void startTask() {
+        startTask(START_DELAY);
+    }
+
+    private void startTask(final long delay) {
         task = new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -102,6 +106,7 @@ class LinkTestTask implements ISpeedTestListener {
                 + (!task.isCancelled() ? "running" : "terminating"));
         if (!task.isCancelled()) {
             console.putMessage("ERR: " + name + " link test: " + errorMessage);
+            startTask(2*START_DELAY);
         }
     }
 
