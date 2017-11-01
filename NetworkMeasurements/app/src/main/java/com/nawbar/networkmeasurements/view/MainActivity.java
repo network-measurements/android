@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.nawbar.networkmeasurements.R;
+import com.nawbar.networkmeasurements.logger.Logger;
 import com.nawbar.networkmeasurements.measurements.LinkSource;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
@@ -38,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     private Connection connection;
     private MeasurementsCoordinator coordinator;
 
-    LinkSource link;
-    boolean testStarted;
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +54,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
                 R.layout.console_row, R.id.text_row, consoleList);
         console.setAdapter(consoleAdapter);
 
-        connection = new Connection(this, this);
+        connection = new Connection(this, this, logger);
         coordinator = new MeasurementsCoordinator(this, this, connection);
-
-        link = new LinkSource(this);
-        testStarted = false;
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_dialog_map);

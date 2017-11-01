@@ -13,6 +13,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.nawbar.networkmeasurements.logger.LoggerInput;
 import com.nawbar.networkmeasurements.server_data.Link;
 import com.nawbar.networkmeasurements.server_data.Location;
 import com.nawbar.networkmeasurements.server_data.Radio;
@@ -46,6 +47,7 @@ public class Connection {
     private RequestQueue queue;
 
     private ConsoleInput console;
+    private LoggerInput logger;
 
     private String sessionId;
     private long startTime;
@@ -54,13 +56,14 @@ public class Connection {
     private String radioUrl;
     private String linkUrl;
 
-    public Connection(Context context, ConsoleInput consoleInput) {
+    public Connection(Context context, ConsoleInput consoleInput, LoggerInput loggerInput) {
         this.queue = Volley.newRequestQueue(context);
         this.console = consoleInput;
+        this.logger = loggerInput;
     }
 
     public void startSession(final Listener listener) {
-        String name = createSessionName();
+        final String name = createSessionName();
         console.putMessage("CON: Starting sessionId \"" + name + "\"");
         try {
             JSONObject args = new JSONObject();
@@ -77,6 +80,7 @@ public class Connection {
                                 locationUrl = URL_BASE + sessionId + LOCATION;
                                 radioUrl = URL_BASE + sessionId + RADIO;
                                 linkUrl = URL_BASE + sessionId + LINK;
+                                if (logger != null) logger.initialize(name);
                                 listener.onSuccess();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -99,7 +103,7 @@ public class Connection {
     public void sendLocation(Location location, final Listener listener) {
         try {
             JSONObject args = location.toJson(System.currentTimeMillis() - startTime);
-            Log.e(TAG, args.toString());
+            log(args.toString());
             JsonObjectRequest request = new JsonObjectRequest
                     (Request.Method.POST, locationUrl, args, new Response.Listener<JSONObject>() {
                         @Override
@@ -123,7 +127,7 @@ public class Connection {
     public void sendRadio(Radio radio, final Listener listener) {
         try {
             JSONObject args = radio.toJson(System.currentTimeMillis() - startTime);
-            Log.e(TAG, args.toString());
+            log(args.toString());
             JsonObjectRequest request = new JsonObjectRequest
                     (Request.Method.POST, radioUrl, args, new Response.Listener<JSONObject>() {
                         @Override
@@ -147,7 +151,7 @@ public class Connection {
     public void sendLink(Link link, final Listener listener) {
         try {
             JSONObject args = link.toJson(System.currentTimeMillis() - startTime);
-            Log.e(TAG, args.toString());
+            log(args.toString());
             JsonObjectRequest request = new JsonObjectRequest
                     (Request.Method.POST, linkUrl, args, new Response.Listener<JSONObject>() {
                         @Override
@@ -172,6 +176,11 @@ public class Connection {
         return dateFormat.format(new Date());
     }
 
+    private void log(String message) {
+        Log.e(TAG, message);
+        if (logger != null) logger.log(message);
+    }
+
     private void traceError(VolleyError error, Listener listener) {
         String message = getErrorMessage(error);
         Log.e(TAG, message);
@@ -185,9 +194,9 @@ public class Connection {
         String message = "Unknown error";
         if(error instanceof TimeoutError){
             message = "Timeout error";
-        }else if ((error instanceof ServerError || error instanceof AuthFailureError)){
+        } else if ((error instanceof ServerError || error instanceof AuthFailureError)){
             if (error.networkResponse != null) {
-                return "Server error " + String.valueOf(error.networkResponse.statusCode);
+                return "Server error " + error.networkResponse.statusCode;
             } else {
                 return "Unknown server error";
             }

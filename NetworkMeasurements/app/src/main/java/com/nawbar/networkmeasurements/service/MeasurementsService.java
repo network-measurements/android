@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.nawbar.networkmeasurements.logger.Logger;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
@@ -22,11 +23,13 @@ public class MeasurementsService extends Service {
     private Connection connection;
     private MeasurementsCoordinator coordinator;
 
+    private Logger logger;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
 
-        connection = new Connection(this, console);
+        connection = new Connection(this, console, logger);
         coordinator = new MeasurementsCoordinator(this, console, connection);
 
         return Service.START_NOT_STICKY;
