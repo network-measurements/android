@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,9 +18,10 @@ import android.widget.ListView;
 
 import com.nawbar.networkmeasurements.R;
 import com.nawbar.networkmeasurements.logger.Logger;
-import com.nawbar.networkmeasurements.measurements.LinkSource;
+import com.nawbar.networkmeasurements.measurements.MeasurementsSimulator;
 import com.nawbar.networkmeasurements.server_connection.Connection;
-import com.nawbar.networkmeasurements.service.MeasurementsCoordinator;
+import com.nawbar.networkmeasurements.measurements.IMeasurementsCoordinator;
+import com.nawbar.networkmeasurements.measurements.MeasurementsCoordinator;
 import com.nawbar.networkmeasurements.service.MeasurementsService;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     private ArrayAdapter consoleAdapter;
 
     private Connection connection;
-    private MeasurementsCoordinator coordinator;
+    private IMeasurementsCoordinator coordinator;
 
     private Logger logger;
 
@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         console.setAdapter(consoleAdapter);
 
         connection = new Connection(this, this, logger);
-        coordinator = new MeasurementsCoordinator(this, this, connection);
+        coordinator = new MeasurementsCoordinator(this, connection, this);
+        //coordinator = new MeasurementsSimulator(connection, this);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_dialog_map);
@@ -74,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
 //                }
             }
         });
+
+        if (coordinator instanceof MeasurementsSimulator) {
+            putConsoleMessage("SYS: ==== SIMULATOR MODE ====");
+        }
 
         checkPermissions();
 

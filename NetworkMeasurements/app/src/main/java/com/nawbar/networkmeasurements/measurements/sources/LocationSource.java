@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements.measurements;
+package com.nawbar.networkmeasurements.measurements.sources;
 
 import android.Manifest;
 import android.content.Context;
@@ -59,7 +59,7 @@ public class LocationSource implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Log.e(TAG, "onLocationChanged: " + location.toString());
-        listener.onLocationChanged(new com.nawbar.networkmeasurements.server_data.Location(location));
+        listener.onLocationChanged(new com.nawbar.networkmeasurements.measurements.models.Location(location));
     }
 
     @Override
@@ -80,6 +80,6 @@ public class LocationSource implements LocationListener {
     public interface Listener {
         void onFixed();
         void onFixLost();
-        void onLocationChanged(com.nawbar.networkmeasurements.server_data.Location location);
+        void onLocationChanged(com.nawbar.networkmeasurements.measurements.models.Location location);
     }
 }

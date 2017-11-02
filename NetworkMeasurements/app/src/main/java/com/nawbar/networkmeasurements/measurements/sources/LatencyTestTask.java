@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements.measurements;
+package com.nawbar.networkmeasurements.measurements.sources;
 
 import android.util.Log;
 
@@ -52,8 +52,7 @@ class LatencyTestTask {
                                 }
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ignored) {
                     }
                 }
             }, 300, 500);

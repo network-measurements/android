@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.nawbar.networkmeasurements.logger.Logger;
+import com.nawbar.networkmeasurements.measurements.MeasurementsCoordinator;
 import com.nawbar.networkmeasurements.server_connection.Connection;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
@@ -30,7 +31,7 @@ public class MeasurementsService extends Service {
         Log.e(TAG, "onStartCommand");
 
         connection = new Connection(this, console, logger);
-        coordinator = new MeasurementsCoordinator(this, console, connection);
+        coordinator = new MeasurementsCoordinator(this, connection, console);
 
         return Service.START_NOT_STICKY;
     }

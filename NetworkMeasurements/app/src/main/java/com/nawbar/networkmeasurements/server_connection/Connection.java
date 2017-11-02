@@ -14,9 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.nawbar.networkmeasurements.logger.LoggerInput;
-import com.nawbar.networkmeasurements.server_data.Link;
-import com.nawbar.networkmeasurements.server_data.Location;
-import com.nawbar.networkmeasurements.server_data.Radio;
+import com.nawbar.networkmeasurements.measurements.models.Link;
+import com.nawbar.networkmeasurements.measurements.models.Location;
+import com.nawbar.networkmeasurements.measurements.models.Radio;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
 import org.json.JSONException;

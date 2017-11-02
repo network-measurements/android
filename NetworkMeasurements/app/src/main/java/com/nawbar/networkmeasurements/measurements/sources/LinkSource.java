@@ -1,6 +1,6 @@
-package com.nawbar.networkmeasurements.measurements;
+package com.nawbar.networkmeasurements.measurements.sources;
 
-import com.nawbar.networkmeasurements.server_data.Link;
+import com.nawbar.networkmeasurements.measurements.models.Link;
 import com.nawbar.networkmeasurements.view.ConsoleInput;
 
 /**

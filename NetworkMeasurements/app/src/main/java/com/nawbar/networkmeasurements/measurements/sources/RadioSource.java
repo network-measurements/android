@@ -1,8 +1,7 @@
-package com.nawbar.networkmeasurements.measurements;
+package com.nawbar.networkmeasurements.measurements.sources;
 
 import android.content.Context;
 import android.telephony.CellInfo;
-import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
@@ -10,8 +9,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.nawbar.networkmeasurements.view.ConsoleInput;
-import com.nawbar.networkmeasurements.server_data.CellData;
-import com.nawbar.networkmeasurements.server_data.Radio;
+import com.nawbar.networkmeasurements.measurements.models.CellData;
+import com.nawbar.networkmeasurements.measurements.models.Radio;
 
 import java.util.List;
 

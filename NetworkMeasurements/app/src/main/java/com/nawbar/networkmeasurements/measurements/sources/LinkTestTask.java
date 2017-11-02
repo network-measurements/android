@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements.measurements;
+package com.nawbar.networkmeasurements.measurements.sources;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -78,8 +78,7 @@ class LinkTestTask implements ISpeedTestListener {
                 Log.e(TAG, "Starting " + name + " link test with delay: " + START_DELAY + "ms");
                 try {
                     Thread.sleep(START_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException ignored) {
                 }
                 if (!task.isCancelled()) startCommand();
                 return null;

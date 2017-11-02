@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements.server_data;
+package com.nawbar.networkmeasurements.measurements.models;
 
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;

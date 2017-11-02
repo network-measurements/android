@@ -1,4 +1,4 @@
-package com.nawbar.networkmeasurements.server_data;
+package com.nawbar.networkmeasurements.measurements.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -6,8 +6,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.nawbar.networkmeasurements.server_data.CellData.CellType.GSM;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-14.
