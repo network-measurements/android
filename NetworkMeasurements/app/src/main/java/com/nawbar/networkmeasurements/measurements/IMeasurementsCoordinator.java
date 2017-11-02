@@ -18,12 +18,12 @@ public abstract class IMeasurementsCoordinator {
 
     private static final String TAG = MeasurementsSimulator.class.getSimpleName();
 
-    static final int RADIO_MEAS_INTERVAL = 5000; // [ms]
+    static final int RADIO_MEAS_INTERVAL = 3000; // [ms]
 
     static final int MIN_LOCATION_INTERVAL = 3000; // [ms]
     static final int MAX_LOCATION_CHANGE = 5; // [m]
 
-    static final int LINK_UPDATE_INTERVAL = 2000; // [ms]
+    static final int LINK_UPDATE_INTERVAL = 1500; // [ms]
 
     Connection connection;
     ConsoleInput console;
