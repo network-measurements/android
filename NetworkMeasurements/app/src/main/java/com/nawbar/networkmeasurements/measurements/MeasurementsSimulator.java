@@ -109,9 +109,10 @@ public class MeasurementsSimulator extends IMeasurementsCoordinator {
         link.downLink = 5000000 + Math.random() * 100000
                 + Math.sin(counter / 2.0) * 500000
                 + Math.sin(counter / 5.0) * 100000;
-        link.upLink = 3700000 + Math.random() * 100000
-                + Math.sin(counter / 5.0) * 100000
-                + Math.sin(counter / 4.0) * 800000;
+        link.upLink = 3700000 + Math.random() * 190000
+                + Math.sin(counter / 1.0) * 100000
+                + Math.cos(counter / 3.0) * 800000
+                + Math.cos(counter / 1.0) * 600000;
         link.latency = 46 + Math.random() * 10
                 + Math.sin(counter / 3.0) * 5
                 + Math.sin(counter / 1.0) * 5;
