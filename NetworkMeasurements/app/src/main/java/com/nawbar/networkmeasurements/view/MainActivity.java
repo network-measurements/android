@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     private Connection connection;
     private IMeasurementsCoordinator coordinator;
 
+    private boolean connecting;
+
     private Logger logger;
 
     @Override
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
         console.setAdapter(consoleAdapter);
 
         logger = new Logger(this, this);
+
+        connecting = false;
 
         connection = new Connection(this, this, logger);
         coordinator = new MeasurementsCoordinator(this, connection, this);
@@ -92,20 +96,28 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     }
 
     private void startMeasurements(final FloatingActionButton fab) {
-        Log.e(TAG, "Starting measurements session");
-        fab.setImageResource(android.R.drawable.ic_dialog_info);
-        connection.startSession(new Connection.Listener() {
-            @Override
-            public void onSuccess() {
-                coordinator.start();
-                fab.setImageResource(android.R.drawable.ic_dialog_alert);
-            }
-            @Override
-            public void onError(String message) {
-                fab.setImageResource(android.R.drawable.ic_dialog_map);
-                putConsoleMessage("ERR: while starting session: " + message);
-            }
-        });
+        if (!connecting) {
+            Log.e(TAG, "Starting measurements session");
+            connecting = true;
+            fab.setImageResource(android.R.drawable.ic_dialog_info);
+            connection.startSession(new Connection.Listener() {
+                @Override
+                public void onSuccess() {
+                    connecting = false;
+                    coordinator.start();
+                    fab.setImageResource(android.R.drawable.ic_dialog_alert);
+                }
+
+                @Override
+                public void onError(String message) {
+                    connecting = false;
+                    fab.setImageResource(android.R.drawable.ic_dialog_map);
+                    putConsoleMessage("ERR: while starting session: " + message);
+                }
+            });
+        } else {
+            Log.e(TAG, "Skipping connect, already processing...");
+        }
     }
 
     private void endMeasurements(final FloatingActionButton fab) {
@@ -118,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     protected void onDestroy() {
         super.onDestroy();
         coordinator.terminate();
+        logger.close();
     }
 
     public void putConsoleMessage(final String message) {
@@ -138,11 +151,13 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
     public void checkPermissions() {
         int permissionCoarse = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
         int permissionFine = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionFile = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCoarse != PackageManager.PERMISSION_GRANTED
-                || permissionFine != PackageManager.PERMISSION_GRANTED) {
+                || permissionFine != PackageManager.PERMISSION_GRANTED
+                || permissionFile != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "requestPermissions");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION);
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
         } else {
             putConsoleMessage("SYS: Permissions check successful");
         }
@@ -155,7 +170,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
             case REQUEST_PERMISSION:
                 if ((grantResults.length > 1)
                         && (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                        && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                        && (grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                        && (grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
                     Log.e(TAG, "Permissions granted");
                     putConsoleMessage("SYS: Permissions granted");
                 } else {

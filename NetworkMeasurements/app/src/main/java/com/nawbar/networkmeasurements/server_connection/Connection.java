@@ -64,7 +64,7 @@ public class Connection {
 
     public void startSession(final Listener listener) {
         final String name = createSessionName();
-        console.putMessage("CON: Starting sessionId \"" + name + "\"");
+        console.putMessage("CON: Starting session: \"" + name + "\"");
         try {
             JSONObject args = new JSONObject();
             args.put("name", name);
