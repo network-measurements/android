@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements ConsoleInput {
                 R.layout.console_row, R.id.text_row, consoleList);
         console.setAdapter(consoleAdapter);
 
+        logger = new Logger(this, this);
+
         connection = new Connection(this, this, logger);
         coordinator = new MeasurementsCoordinator(this, connection, this);
         //coordinator = new MeasurementsSimulator(connection, this);
