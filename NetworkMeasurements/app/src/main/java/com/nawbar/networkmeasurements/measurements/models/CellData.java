@@ -97,6 +97,30 @@ public class CellData {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CellData cellData = (CellData) o;
+
+        if (mnc != cellData.mnc) return false;
+        if (mcc != cellData.mcc) return false;
+        if (cellId != cellData.cellId) return false;
+        if (areaCode != cellData.areaCode) return false;
+        return type == cellData.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + mnc;
+        result = 31 * result + mcc;
+        result = 31 * result + cellId;
+        result = 31 * result + areaCode;
+        return result;
+    }
+
     JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
         result.put("signal_strength", dbm);

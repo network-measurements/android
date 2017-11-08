@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class Radio {
     private Set<CellData> cells;
 
     public Radio() {
+        this.registered = null;
         this.cells = new HashSet<>();
     }
 
@@ -29,7 +31,7 @@ public class Radio {
     }
 
     public void addCell(CellData cellData) {
-        if (cellData != registered) {
+        if (!cellData.equals(registered)) {
             if (!cells.add(cellData)) {
                 Log.e(TAG, "Already containing cell, skipping");
             }
@@ -41,7 +43,8 @@ public class Radio {
     @Override
     public String toString() {
         return "Radio{" +
-                "cells=" + cells +
+                "registered=" + registered +
+                ", cells=" + cells +
                 '}';
     }
 
@@ -49,7 +52,7 @@ public class Radio {
         JSONObject result = new JSONObject();
         result.put("time", time);
         JSONArray array = new JSONArray();
-        array.put(registered);
+        array.put(registered.toJson());
         for (CellData data : cells) {
             array.put(data.toJson());
         }
@@ -58,14 +61,21 @@ public class Radio {
     }
 
     public String getShortString() {
-        if (cells != null && cells.size() > 0) {
+        if (registered != null) {
             int gsm = 0, wcdma = 0, lte = 0;
+            switch (registered.getType()) {
+                case GSM: ++gsm; break;
+                case WCDMA: ++wcdma; break;
+                case LTE: ++lte; break;
+            }
             int reg_strength = registered.getDbm();
-            for (CellData c : cells) {
-                switch (c.getType()) {
-                    case GSM: ++gsm; break;
-                    case WCDMA: ++wcdma; break;
-                    case LTE: ++lte; break;
+            if (cells != null) {
+                for (CellData c : cells) {
+                    switch (c.getType()) {
+                        case GSM: ++gsm; break;
+                        case WCDMA: ++wcdma; break;
+                        case LTE: ++lte; break;
+                    }
                 }
             }
             return "GSM[" + gsm + "], WCDMA[" + wcdma + "] LTE[" + lte + "], RSS: "

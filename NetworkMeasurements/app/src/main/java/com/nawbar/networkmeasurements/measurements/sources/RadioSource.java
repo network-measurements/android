@@ -52,7 +52,7 @@ public class RadioSource {
             if (foundRegistered) {
                 for (CellInfo info : cells) {
                     CellData data = getValidCellData(info);
-                    if (info.isRegistered() && data != null) {
+                    if (!info.isRegistered() && data != null) {
                         measurement.addCell(data);
                     }
                 }
