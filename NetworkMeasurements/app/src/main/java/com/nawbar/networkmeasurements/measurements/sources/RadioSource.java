@@ -1,5 +1,6 @@
 package com.nawbar.networkmeasurements.measurements.sources;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
@@ -32,13 +33,17 @@ public class RadioSource {
 
     public Radio measure() {
         Radio measurement = new Radio();
+        @SuppressLint("MissingPermission") // application checks it on startup
         List<CellInfo> cells = telephonyManager.getAllCellInfo();
         if (cells != null) {
             Log.e(TAG, "Found cells: " + cells.size());
             boolean foundRegistered = false;
             for (CellInfo info : cells) {
                 if (info.isRegistered()) {
-                    pushCell(measurement, info);
+                    CellData data = getValidCellData(info);
+                    if (data != null) {
+                        measurement.setRegistered(data);
+                    }
                     foundRegistered = true;
                     Log.e(TAG, "Found registered cell: " + info.toString());
                     break;
@@ -46,44 +51,35 @@ public class RadioSource {
             }
             if (foundRegistered) {
                 for (CellInfo info : cells) {
-                    if (!info.isRegistered()) {
-                        pushCell(measurement, info);
+                    CellData data = getValidCellData(info);
+                    if (info.isRegistered() && data != null) {
+                        measurement.addCell(data);
                     }
                 }
             }
         }
-//        int size = (int)(Math.random() * 3) + 1;
-//        for (int i = 0; i < size; i++) {
-//            int s = (int)(-60 - Math.random() * 30);
-//            int cellId = 2147483647;
-//            int areaCode = 2147483647;
-//            if (i == 0) {
-//                cellId = 1700494;
-//                areaCode = 206;
-//            }
-//            CellData cd = new CellData(CellData.CellType.WCDMA, 260, 6, cellId, areaCode, s);
-//            measurement.addCell(cd);
-//        }
         Log.e(TAG, measurement.toString());
         return measurement;
     }
 
-    private void pushCell(Radio measurement, CellInfo info) {
+    private CellData getValidCellData(CellInfo info) {
         if (info instanceof CellInfoGsm) {
             if (isValidGsmCell((CellInfoGsm) info)) {
-                measurement.addCell(new CellData((CellInfoGsm) info));
+                return new CellData((CellInfoGsm) info);
             } else Log.e(TAG, "Invalid GSM cell: " + info.toString());
         } else if (info instanceof CellInfoWcdma) {
             if (isValidWcdmaCell((CellInfoWcdma) info)) {
-                measurement.addCell(new CellData((CellInfoWcdma) info));
+                return new CellData((CellInfoWcdma) info);
             } else Log.e(TAG, "Invalid WCDMA cell: " + info.toString());
         } else if (info instanceof CellInfoLte) {
             if (isValidLteCell((CellInfoLte) info)) {
-                measurement.addCell(new CellData((CellInfoLte) info));
+                return new CellData((CellInfoLte) info);
             } else Log.e(TAG, "Invalid LTE cell: " + info.toString());
         } else {
             Log.i(TAG, "Unknown cell type");
+            return null;
         }
+        return null;
     }
 
     private boolean isValidGsmCell(CellInfoGsm info) {

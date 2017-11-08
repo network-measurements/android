@@ -1,11 +1,13 @@
 package com.nawbar.networkmeasurements.measurements.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Bartosz Nawrot on 2017-10-14.
@@ -15,18 +17,25 @@ public class Radio {
 
     private static final String TAG = Radio.class.getSimpleName();
 
-    private List<CellData> cells;
+    private CellData registered;
+    private Set<CellData> cells;
 
     public Radio() {
-        this.cells = new ArrayList<>();
+        this.cells = new HashSet<>();
+    }
+
+    public void setRegistered(CellData cellData) {
+        registered = cellData;
     }
 
     public void addCell(CellData cellData) {
-        cells.add(cellData);
-    }
-
-    public List<CellData> getCells() {
-        return cells;
+        if (cellData != registered) {
+            if (!cells.add(cellData)) {
+                Log.e(TAG, "Already containing cell, skipping");
+            }
+        } else {
+            Log.e(TAG, "Skipping registered cell");
+        }
     }
 
     @Override
@@ -40,6 +49,7 @@ public class Radio {
         JSONObject result = new JSONObject();
         result.put("time", time);
         JSONArray array = new JSONArray();
+        array.put(registered);
         for (CellData data : cells) {
             array.put(data.toJson());
         }
@@ -50,7 +60,7 @@ public class Radio {
     public String getShortString() {
         if (cells != null && cells.size() > 0) {
             int gsm = 0, wcdma = 0, lte = 0;
-            int reg_strength = cells.get(0).getDbm();
+            int reg_strength = registered.getDbm();
             for (CellData c : cells) {
                 switch (c.getType()) {
                     case GSM: ++gsm; break;
