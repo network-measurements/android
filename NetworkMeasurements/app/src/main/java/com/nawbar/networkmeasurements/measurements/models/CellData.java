@@ -3,6 +3,7 @@ package com.nawbar.networkmeasurements.measurements.models;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,9 @@ import org.json.JSONObject;
  */
 
 public class CellData {
+
+    private static final String TAG = CellData.class.getSimpleName();
+
     public enum CellType {
         GSM,
         WCDMA,
@@ -122,8 +126,14 @@ public class CellData {
     }
 
     JSONObject toJson() throws JSONException {
+        // TODO fix this, signal strength HAS to be in defined range
+        int ss = Math.max(-113, Math.min(-51, dbm));
+        if (ss != dbm) {
+            Log.e(TAG, " ===== Signal strength clamped to acceptable value !!! =====");
+        }
+
         JSONObject result = new JSONObject();
-        result.put("signal_strength", dbm);
+        result.put("signal_strength", ss);
         JSONObject cell = new JSONObject();
         cell.put("cell_type", type.toString());
         cell.put("mnc", mnc);
